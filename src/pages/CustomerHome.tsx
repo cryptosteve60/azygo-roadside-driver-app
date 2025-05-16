@@ -58,6 +58,12 @@ const CustomerHome: React.FC = () => {
             price="$95"
             description="Need a tow? We'll get your vehicle to a safe location."
           />
+          <ServiceCard 
+            type="charging" 
+            title="EV Charging" 
+            price="$55"
+            description="Electric vehicle out of power? We'll bring mobile charging to you."
+          />
         </div>
       </section>
       

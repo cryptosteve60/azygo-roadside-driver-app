@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +41,8 @@ export default function RequestService() {
         return 39;
       case "tow":
         return 99;
+      case "charging":
+        return 55;
       default:
         return 69;
     }

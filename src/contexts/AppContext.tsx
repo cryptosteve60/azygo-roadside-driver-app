@@ -6,7 +6,8 @@ export type ServiceType =
   | "tire" 
   | "fuel" 
   | "lockout" 
-  | "tow";
+  | "tow"
+  | "charging"; // Added electric vehicle charging
 
 // Define the user role
 export type UserRole = "customer" | "worker";

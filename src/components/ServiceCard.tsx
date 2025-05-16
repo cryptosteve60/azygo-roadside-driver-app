@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ServiceType } from "@/contexts/AppContext";
-import { Battery, Car, Flag, Fuel, Lock } from "lucide-react";
+import { Battery, Car, Flag, Fuel, Lock, Plug } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ServiceCardProps {
@@ -27,6 +27,8 @@ export default function ServiceCard({ type, title, price, description }: Service
         return <Lock className="h-8 w-8 text-primary" />;
       case "tow":
         return <Flag className="h-8 w-8 text-primary" />;
+      case "charging":
+        return <Plug className="h-8 w-8 text-primary" />;
     }
   };
   
