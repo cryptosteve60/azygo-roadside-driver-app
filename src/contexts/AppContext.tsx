@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Define the service types our app will offer
@@ -41,6 +40,7 @@ export interface JobRequest {
   completedAt?: Date;
   estimatedArrival?: Date;
   price?: number;
+  vehicleDetails?: string; // Added this field to fix the type error
 }
 
 // Define mock user data

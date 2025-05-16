@@ -47,7 +47,12 @@ export default function RequestService() {
 
   const handleSubmitRequest = () => {
     if (!vehicleDetails || !description || !activeUser) {
-      toast.error("Please fill in all required fields");
+      // Fix: Use toast() function directly with proper properties
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please fill in all required fields"
+      });
       return;
     }
     
@@ -64,7 +69,7 @@ export default function RequestService() {
       status: "requested",
       price: getServicePrice(serviceType),
       description,
-      vehicleDetails,
+      vehicleDetails, // This field is now in the type
       createdAt: new Date()
     };
     
@@ -72,7 +77,9 @@ export default function RequestService() {
     const updatedJobs = [...availableJobs, newJobRequest];
     setAvailableJobs(updatedJobs);
     
-    toast.success("Service request submitted!", {
+    // Fix: Use toast() function directly with proper properties
+    toast({
+      title: "Service request submitted!",
       description: "We're finding a helper nearby."
     });
     
