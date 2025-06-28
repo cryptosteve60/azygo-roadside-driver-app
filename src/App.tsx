@@ -25,7 +25,7 @@ const App = () => (
             <Route path="/request/:serviceType" element={<RequestService />} />
             <Route path="/request-confirmation" element={<RequestConfirmation />} />
             <Route path="/job/:jobId" element={<JobDetails />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            {/* New customer-focused routes will be added here */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

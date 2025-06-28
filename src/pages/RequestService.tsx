@@ -3,27 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { JobRequest, ServiceType, useApp } from "@/contexts/AppContext";
+import { ServiceType, ServiceRequest, useApp } from "@/contexts/AppContext";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin } from "lucide-react";
+import { MapPin, Camera, Car } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function RequestService() {
   const { serviceType } = useParams<{ serviceType: ServiceType }>();
-  const { activeUser, currentLocation, availableJobs, setAvailableJobs } = useApp();
+  const { customer, currentLocation, setCurrentRequest } = useApp();
   const { toast } = useToast();
   const navigate = useNavigate();
   
   const [location, setLocation] = useState("");
   const [vehicleDetails, setVehicleDetails] = useState("");
   const [description, setDescription] = useState("");
+  const [estimatedPrice, setEstimatedPrice] = useState(0);
   
   useEffect(() => {
     if (currentLocation) {
       setLocation(`${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`);
     }
-  }, [currentLocation]);
+    if (serviceType) {
+      setEstimatedPrice(getServicePrice(serviceType));
+    }
+  }, [currentLocation, serviceType]);
   
   if (!serviceType) {
     return <div>Invalid service type</div>;
@@ -31,116 +35,159 @@ export default function RequestService() {
   
   const getServicePrice = (type: ServiceType) => {
     switch (type) {
-      case "battery":
-        return 49;
-      case "tire":
-        return 79;
-      case "fuel":
-        return 59;
-      case "lockout":
-        return 39;
-      case "tow":
-        return 99;
-      case "charging":
-        return 55;
-      default:
-        return 69;
+      case "battery": return 49;
+      case "tire": return 69;
+      case "fuel": return 45;
+      case "lockout": return 75;
+      case "tow": return 99;
+      case "charging": return 59;
+      default: return 69;
+    }
+  };
+
+  const getServiceTitle = (type: ServiceType) => {
+    switch (type) {
+      case "battery": return "Battery Jump";
+      case "tire": return "Tire Change";
+      case "fuel": return "Fuel Delivery";
+      case "lockout": return "Lockout Service";
+      case "tow": return "Towing Service";
+      case "charging": return "EV Charging";
+      default: return "Roadside Service";
     }
   };
 
   const handleSubmitRequest = () => {
-    if (!vehicleDetails || !description || !activeUser) {
-      // Fix: Use toast() function directly with proper properties
+    if (!vehicleDetails || !description || !customer) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: "Missing Information",
         description: "Please fill in all required fields"
       });
       return;
     }
     
-    const newJobRequest: JobRequest = {
-      id: `job-${Date.now()}`,
-      customerName: activeUser.name,
-      customerId: activeUser.id,
+    const newServiceRequest: ServiceRequest = {
+      id: `req-${Date.now()}`,
+      customerId: customer.id,
+      customerName: customer.name,
+      customerPhone: customer.phone,
       customerLocation: {
         lat: currentLocation?.lat || 0,
         lng: currentLocation?.lng || 0,
         address: location
       },
       serviceType,
-      status: "requested",
-      price: getServicePrice(serviceType),
       description,
-      vehicleDetails, // This field is now in the type
-      createdAt: new Date()
+      vehicleDetails,
+      status: "requested",
+      price: estimatedPrice,
+      createdAt: new Date(),
+      safetyPin: Math.floor(1000 + Math.random() * 9000).toString()
     };
     
-    // Fix TypeScript error by updating availableJobs directly rather than using setAvailableJobs with a callback
-    const updatedJobs = [...availableJobs, newJobRequest];
-    setAvailableJobs(updatedJobs);
+    setCurrentRequest(newServiceRequest);
     
-    // Fix: Use toast() function directly with proper properties
     toast({
-      title: "Service request submitted!",
-      description: "We're finding a helper nearby."
+      title: "Service Request Submitted! 🚗",
+      description: "We're finding the best driver for you."
     });
     
-    // Navigate to the confirmation page with job details
-    navigate('/request-confirmation', { 
-      state: { jobRequest: newJobRequest } 
+    // Navigate to searching screen
+    navigate('/searching', { 
+      state: { serviceRequest: newServiceRequest } 
     });
   };
   
   return (
-    <div className="container max-w-2xl mx-auto py-10">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Request a {serviceType} Service</h1>
-        <p className="text-muted-foreground">Please provide the following details to submit your request.</p>
+    <div className="container max-w-2xl mx-auto py-6">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold">Request {getServiceTitle(serviceType)}</h1>
+        <p className="text-muted-foreground">Help is on the way! Please provide details about your situation.</p>
+      </div>
+
+      {/* Price Estimate */}
+      <div className="mb-6 p-4 rounded-lg bg-primary/10 border border-primary/20">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="font-bold">Estimated Cost</h3>
+            <p className="text-sm text-muted-foreground">Final price may vary based on your specific needs</p>
+          </div>
+          <div className="text-2xl font-bold text-primary">${estimatedPrice}</div>
+        </div>
       </div>
       
-      <div className="grid gap-4">
+      <div className="grid gap-6">
+        {/* Location */}
         <div>
-          <Label htmlFor="location">Location</Label>
+          <Label htmlFor="location">Pickup Location</Label>
           <div className="relative">
             <Input 
               id="location" 
               className="app-input peer" 
               value={location}
               onChange={(e) => setLocation(e.target.value)}
+              placeholder="Enter your current location"
             />
             <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            Current location: {location}
+            📍 We'll use your GPS location for accuracy
           </p>
         </div>
         
+        {/* Vehicle Details */}
         <div>
-          <Label htmlFor="vehicleDetails">Vehicle Details</Label>
-          <Input 
-            id="vehicleDetails" 
-            className="app-input" 
-            placeholder="Year, Make, Model"
-            value={vehicleDetails}
-            onChange={(e) => setVehicleDetails(e.target.value)}
-          />
+          <Label htmlFor="vehicleDetails">Vehicle Information *</Label>
+          <div className="relative">
+            <Input 
+              id="vehicleDetails" 
+              className="app-input peer" 
+              placeholder="e.g., 2020 Honda Civic, Blue"
+              value={vehicleDetails}
+              onChange={(e) => setVehicleDetails(e.target.value)}
+              required
+            />
+            <Car className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
+          </div>
         </div>
         
+        {/* Issue Description */}
         <div>
-          <Label htmlFor="description">Description of Issue</Label>
+          <Label htmlFor="description">Describe Your Issue *</Label>
           <Textarea 
             id="description" 
-            className="app-input" 
-            placeholder="Describe the issue you're experiencing"
+            className="app-input min-h-[100px]" 
+            placeholder="Tell us what's wrong with your vehicle..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            required
           />
         </div>
+
+        {/* Photo Upload (Placeholder) */}
+        <div>
+          <Label>Add Photos (Optional)</Label>
+          <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center">
+            <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground mb-2">Upload photos to help us understand the issue</p>
+            <Button variant="outline" size="sm" disabled>
+              Choose Photos
+            </Button>
+          </div>
+        </div>
         
-        <Button className="app-button" onClick={handleSubmitRequest}>
-          Submit Request
+        {/* Submit Button */}
+        <Button className="app-button mt-4" onClick={handleSubmitRequest}>
+          Request Help - ${estimatedPrice}
         </Button>
+
+        {/* Terms */}
+        <p className="text-xs text-muted-foreground text-center">
+          By requesting service, you agree to our Terms of Service and Privacy Policy. 
+          Standard rates apply, final price confirmed by driver.
+        </p>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Define the service types our app will offer
@@ -7,26 +8,25 @@ export type ServiceType =
   | "fuel" 
   | "lockout" 
   | "tow"
-  | "charging"; // Added electric vehicle charging
+  | "charging";
 
-// Define the user role
-export type UserRole = "customer" | "worker";
-
-// Define the job status
+// Define the job status for customer requests
 export type JobStatus = 
   | "requested" 
-  | "accepted"
-  | "enroute" 
-  | "arrived"
-  | "inProgress"
+  | "searching"
+  | "driver_assigned"
+  | "driver_enroute" 
+  | "driver_arrived"
+  | "in_progress"
   | "completed"
   | "cancelled";
 
-// Define the job data structure
-export interface JobRequest {
+// Define the job data structure for customer requests
+export interface ServiceRequest {
   id: string;
   customerId: string;
   customerName: string;
+  customerPhone?: string;
   customerLocation: {
     lat: number;
     lng: number;
@@ -34,39 +34,54 @@ export interface JobRequest {
   };
   serviceType: ServiceType;
   description: string;
+  vehicleDetails?: string;
   status: JobStatus;
   createdAt: Date;
-  acceptedBy?: string;
-  acceptedAt?: Date;
-  completedAt?: Date;
+  driverId?: string;
+  driverName?: string;
+  driverPhone?: string;
+  driverLocation?: {
+    lat: number;
+    lng: number;
+  };
   estimatedArrival?: Date;
   price?: number;
-  vehicleDetails?: string; // Added this field to fix the type error
+  safetyPin?: string;
 }
 
-// Define mock user data
-export interface User {
+// Define customer user data
+export interface Customer {
   id: string;
   name: string;
-  role: UserRole;
+  email?: string;
+  phone?: string;
   rating: number;
-  jobsCompleted: number;
-  image?: string;
+  emergencyContacts?: {
+    name: string;
+    phone: string;
+    relationship: string;
+  }[];
+  paymentMethods?: string[];
 }
 
 interface AppContextType {
-  userRole: UserRole;
-  setUserRole: (role: UserRole) => void;
-  activeUser: User | null;
-  setActiveUser: (user: User | null) => void;
-  availableJobs: JobRequest[];
-  setAvailableJobs: (jobs: JobRequest[]) => void;
-  myJobs: JobRequest[];
-  setMyJobs: (jobs: JobRequest[]) => void;
-  currentJob: JobRequest | null;
-  setCurrentJob: (job: JobRequest | null) => void;
+  // Customer data
+  customer: Customer | null;
+  setCustomer: (customer: Customer | null) => void;
+  
+  // Service requests
+  currentRequest: ServiceRequest | null;
+  setCurrentRequest: (request: ServiceRequest | null) => void;
+  requestHistory: ServiceRequest[];
+  setRequestHistory: (history: ServiceRequest[]) => void;
+  
+  // Location
   currentLocation: { lat: number; lng: number } | null;
   setCurrentLocation: (location: { lat: number; lng: number } | null) => void;
+  
+  // App state
+  isAuthenticated: boolean;
+  setIsAuthenticated: (auth: boolean) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -80,77 +95,41 @@ export const useApp = () => {
 };
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [userRole, setUserRole] = useState<UserRole>("customer");
-  const [activeUser, setActiveUser] = useState<User | null>({
-    id: "user-123",
+  const [customer, setCustomer] = useState<Customer | null>({
+    id: "customer-123",
     name: "John Doe",
-    role: "customer",
+    email: "john@example.com",
+    phone: "+1234567890",
     rating: 4.8,
-    jobsCompleted: 0,
+    emergencyContacts: [
+      { name: "Jane Doe", phone: "+1234567891", relationship: "Spouse" }
+    ],
   });
-  const [availableJobs, setAvailableJobs] = useState<JobRequest[]>([]);
-  const [myJobs, setMyJobs] = useState<JobRequest[]>([]);
-  const [currentJob, setCurrentJob] = useState<JobRequest | null>(null);
+  
+  const [currentRequest, setCurrentRequest] = useState<ServiceRequest | null>(null);
+  const [requestHistory, setRequestHistory] = useState<ServiceRequest[]>([]);
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true); // Mock as authenticated for now
 
-  // Mock the current location if GPS isn't available in the development environment
+  // Mock the current location
   React.useEffect(() => {
-    // Mock location - downtown area
+    // Mock location - downtown Los Angeles
     setCurrentLocation({ lat: 34.0522, lng: -118.2437 });
-    
-    // Mock available jobs for workers
-    if (userRole === "worker") {
-      const mockJobs: JobRequest[] = [
-        {
-          id: "job-1",
-          customerId: "cust-123",
-          customerName: "Alex Johnson",
-          customerLocation: {
-            lat: 34.0535,
-            lng: -118.2430,
-            address: "123 Downtown St, Los Angeles"
-          },
-          serviceType: "battery",
-          description: "My car won't start, need a jump!",
-          status: "requested",
-          createdAt: new Date(),
-          price: 45,
-        },
-        {
-          id: "job-2",
-          customerId: "cust-456",
-          customerName: "Sam Smith",
-          customerLocation: {
-            lat: 34.0510,
-            lng: -118.2450,
-            address: "456 Main Ave, Los Angeles"
-          },
-          serviceType: "tire",
-          description: "Flat tire needs changing",
-          status: "requested",
-          createdAt: new Date(),
-          price: 60,
-        },
-      ];
-      setAvailableJobs(mockJobs);
-    }
-  }, [userRole]);
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
-        userRole,
-        setUserRole,
-        activeUser,
-        setActiveUser,
-        availableJobs,
-        setAvailableJobs,
-        myJobs,
-        setMyJobs,
-        currentJob,
-        setCurrentJob,
+        customer,
+        setCustomer,
+        currentRequest,
+        setCurrentRequest,
+        requestHistory,
+        setRequestHistory,
         currentLocation,
         setCurrentLocation,
+        isAuthenticated,
+        setIsAuthenticated,
       }}
     >
       {children}
