@@ -10,7 +10,7 @@ export const checkRequiredEnvVars = () => {
   const missing = [];
   
   if (!config.googleMapsApiKey) {
-    missing.push('VITE_GOOGLE_MAPS_API_KEY');
+    missing.push('VITE_GOOGLE_MAPS_AIzaSyB1OqXUwauWo10wiPjJmiRdqhnIT-1j9Ug');
   }
   
   if (missing.length > 0) {
