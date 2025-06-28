@@ -1,5 +1,4 @@
-
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 // Define the service types our app will offer
 export type ServiceType = 
@@ -88,6 +87,8 @@ interface AppContextType {
   // Location
   currentLocation: { lat: number; lng: number } | null;
   setCurrentLocation: (location: { lat: number; lng: number } | null) => void;
+  locationError: string | null;
+  isLocationLoading: boolean;
   
   // App state
   isAuthenticated: boolean;
@@ -119,12 +120,48 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [currentRequest, setCurrentRequest] = useState<ServiceRequest | null>(null);
   const [requestHistory, setRequestHistory] = useState<ServiceRequest[]>([]);
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true); // Mock as authenticated for now
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [isLocationLoading, setIsLocationLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
 
-  // Mock the current location
-  React.useEffect(() => {
-    // Mock location - downtown Los Angeles
-    setCurrentLocation({ lat: 34.0522, lng: -118.2437 });
+  // Get user's current location
+  useEffect(() => {
+    const getCurrentLocation = () => {
+      setIsLocationLoading(true);
+      setLocationError(null);
+      
+      if (!navigator.geolocation) {
+        setLocationError("Geolocation is not supported by this browser.");
+        setIsLocationLoading(false);
+        // Fallback to LA
+        setCurrentLocation({ lat: 34.0522, lng: -118.2437 });
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCurrentLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          setIsLocationLoading(false);
+        },
+        (error) => {
+          console.error('Error getting location:', error);
+          setLocationError(error.message);
+          setIsLocationLoading(false);
+          // Fallback to LA
+          setCurrentLocation({ lat: 34.0522, lng: -118.2437 });
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000, // 5 minutes
+        }
+      );
+    };
+
+    getCurrentLocation();
   }, []);
 
   return (
@@ -138,6 +175,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         setRequestHistory,
         currentLocation,
         setCurrentLocation,
+        locationError,
+        isLocationLoading,
         isAuthenticated,
         setIsAuthenticated,
       }}
