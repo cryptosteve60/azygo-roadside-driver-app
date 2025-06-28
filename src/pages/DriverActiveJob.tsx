@@ -12,7 +12,9 @@ const DriverActiveJob: React.FC = () => {
   const { currentJob, setCurrentJob } = useDriver();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [jobStatus, setJobStatus] = useState(currentJob?.status || "accepted");
+  const [jobStatus, setJobStatus] = useState<"available" | "accepted" | "enroute" | "arrived" | "inProgress" | "completed">(
+    currentJob?.status || "accepted"
+  );
 
   if (!currentJob) {
     return (
@@ -27,12 +29,14 @@ const DriverActiveJob: React.FC = () => {
     );
   }
 
-  const handleStatusUpdate = (newStatus: string) => {
+  const handleStatusUpdate = (newStatus: "available" | "accepted" | "enroute" | "arrived" | "inProgress" | "completed") => {
     setJobStatus(newStatus);
-    const updatedJob = { ...currentJob, status: newStatus as any };
+    const updatedJob = { ...currentJob, status: newStatus };
     setCurrentJob(updatedJob);
 
     const statusMessages = {
+      available: "Job is now available",
+      accepted: "Job accepted!",
       enroute: "Customer notified: You're on your way! 🚗",
       arrived: "Customer notified: You've arrived! 📍", 
       inProgress: "Job started. Keep the customer updated! 🔧",
@@ -41,7 +45,7 @@ const DriverActiveJob: React.FC = () => {
 
     toast({
       title: "Status Updated",
-      description: statusMessages[newStatus as keyof typeof statusMessages]
+      description: statusMessages[newStatus]
     });
 
     if (newStatus === "completed") {
