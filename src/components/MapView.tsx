@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { useApp } from '@/contexts/AppContext';
+import { useDriver } from '@/contexts/DriverContext';
 import { Loader } from '@googlemaps/js-api-loader';
 import { config } from '@/config/env';
 
@@ -21,9 +21,12 @@ const MapView: React.FC<MapViewProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const { currentLocation } = useApp();
+  const { driver } = useDriver();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Use driver's current location or default to LA
+  const currentLocation = driver?.currentLocation || { lat: 34.0522, lng: -118.2437 };
   
   useEffect(() => {
     const initializeMap = async () => {
@@ -50,7 +53,7 @@ const MapView: React.FC<MapViewProps> = ({
         if (!mapRef.current) return;
         
         const mapOptions: google.maps.MapOptions = {
-          center: currentLocation || { lat: 34.0522, lng: -118.2437 }, // Default to LA
+          center: currentLocation,
           zoom: 15,
           disableDefaultUI: !interactive,
           gestureHandling: interactive ? 'auto' : 'none',
