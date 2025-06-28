@@ -10,14 +10,12 @@ interface LocationDisplayProps {
 
 const LocationDisplay: React.FC<LocationDisplayProps> = ({ city, state }) => {
   return (
-    <Card className="p-4 mb-4">
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-full bg-blue-100">
-          <MapPin className="h-5 w-5 text-blue-600" />
-        </div>
+    <Card className="p-3 bg-background/95 backdrop-blur-sm border-0 shadow-lg">
+      <div className="flex items-center gap-2">
+        <MapPin className="h-4 w-4 text-primary" />
         <div>
-          <h3 className="font-semibold">Current Location</h3>
-          <p className="text-sm text-muted-foreground">{city}, {state}</p>
+          <p className="text-sm font-medium">{state}: {city}</p>
+          <p className="text-xs text-muted-foreground">Current service area</p>
         </div>
       </div>
     </Card>

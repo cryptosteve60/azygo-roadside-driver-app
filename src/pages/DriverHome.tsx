@@ -108,52 +108,55 @@ const DriverHome: React.FC = () => {
 
   return (
     <DriverLayout>
-      <div className="max-w-2xl mx-auto">
-        {/* Location Display */}
-        <LocationDisplay city="Los Angeles" state="CA" />
+      <div className="relative h-full -m-4">
+        {/* Full-screen Map */}
+        <MapView 
+          height="h-full" 
+          showCurrentLocation={true}
+          interactive={true}
+        />
         
-        {/* EAZY GO Toggle */}
-        <EazyGoToggle isOnline={isOnline} onToggle={handleToggleOnline} />
-        
-        {/* Map View */}
-        <div className="mb-6">
-          <MapView 
-            height="h-[300px]" 
-            showCurrentLocation={true}
-            interactive={true}
-          />
-        </div>
-
-        {/* Available Jobs Section */}
-        {isOnline && mockJobs.length > 0 && (
-          <div className="mb-6">
-            <h2 className="text-xl font-bold mb-4">Available Requests</h2>
-            <div className="space-y-4">
-              {mockJobs.map((job) => (
-                <JobRequestCard
-                  key={job.id}
-                  job={job}
-                  onAccept={handleAcceptJob}
-                  onDecline={handleDeclineJob}
-                />
-              ))}
+        {/* Overlaid Components */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Top Section - Location Display */}
+          <div className="absolute top-4 left-4 right-4 pointer-events-auto">
+            <LocationDisplay city="Los Angeles" state="CA" />
+          </div>
+          
+          {/* Bottom Section - EAZY GO Toggle */}
+          <div className="absolute bottom-20 left-4 right-4 pointer-events-auto">
+            <EazyGoToggle isOnline={isOnline} onToggle={handleToggleOnline} />
+          </div>
+          
+          {/* Available Jobs - Overlay when online */}
+          {isOnline && mockJobs.length > 0 && (
+            <div className="absolute top-24 left-4 right-4 bottom-32 overflow-y-auto pointer-events-auto">
+              <div className="bg-background/95 backdrop-blur-sm rounded-lg p-4 mb-4">
+                <h2 className="text-xl font-bold mb-4">Available Requests</h2>
+                <div className="space-y-4">
+                  {mockJobs.map((job) => (
+                    <JobRequestCard
+                      key={job.id}
+                      job={job}
+                      onAccept={handleAcceptJob}
+                      onDecline={handleDeclineJob}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-
-        {/* Status Messages */}
-        {isOnline && mockJobs.length === 0 && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Looking for requests...</p>
-            <p className="text-sm text-muted-foreground mt-1">New requests will appear here automatically.</p>
-          </div>
-        )}
-
-        {!isOnline && (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Tap "EAZY GO!" to start receiving requests!</p>
-          </div>
-        )}
+          )}
+          
+          {/* Status Messages */}
+          {isOnline && mockJobs.length === 0 && (
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
+              <div className="bg-background/95 backdrop-blur-sm rounded-lg p-6 text-center">
+                <p className="text-muted-foreground">Looking for requests...</p>
+                <p className="text-sm text-muted-foreground mt-1">New requests will appear here automatically.</p>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </DriverLayout>
   );

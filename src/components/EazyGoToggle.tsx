@@ -10,21 +10,21 @@ interface EazyGoToggleProps {
 
 const EazyGoToggle: React.FC<EazyGoToggleProps> = ({ isOnline, onToggle }) => {
   return (
-    <Card className="p-4 mb-4">
+    <Card className="p-4 bg-background/95 backdrop-blur-sm border-0 shadow-lg">
       <div className="text-center">
+        <p className="text-sm font-medium mb-3">
+          {isOnline ? "You're online and available" : "Not busy right now"}
+        </p>
         <Button
           onClick={() => onToggle(!isOnline)}
-          className={`w-full h-16 text-xl font-bold rounded-xl transition-all ${
+          className={`w-full h-14 text-lg font-bold rounded-full transition-all ${
             isOnline 
               ? 'bg-red-500 hover:bg-red-600 text-white' 
-              : 'bg-blue-500 hover:bg-blue-600 text-white'
+              : 'bg-red-500 hover:bg-red-600 text-white'
           }`}
         >
           {isOnline ? 'STOP EAZY GO!' : 'EAZY GO!'}
         </Button>
-        <p className="text-sm text-muted-foreground mt-2">
-          {isOnline ? 'You\'re online and ready for requests' : 'Tap to start receiving requests'}
-        </p>
       </div>
     </Card>
   );
