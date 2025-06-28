@@ -1,7 +1,7 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { JobRequest, JobStatus, useApp } from "@/contexts/AppContext";
+import { useApp } from "@/contexts/AppContext";
 import MapView from "@/components/MapView";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -24,16 +24,17 @@ import { toast } from "sonner";
 const JobDetails: React.FC = () => {
   const navigate = useNavigate();
   const { jobId } = useParams<{ jobId: string }>();
-  const { myJobs, setMyJobs, userRole } = useApp();
-  const [isUpdating, setIsUpdating] = useState(false);
+  const { currentRequest, requestHistory } = useApp();
   
-  // Find the job in the user's jobs
-  const job = myJobs.find((j) => j.id === jobId);
+  // Find the job in current request or history
+  const job = currentRequest?.id === jobId 
+    ? currentRequest 
+    : requestHistory.find((j) => j.id === jobId);
   
   if (!job) {
     return (
-      <div className="p-4 text-center">
-        <h1 className="text-xl font-bold mb-4">Job Not Found</h1>
+      <div className="min-h-screen bg-background flex flex-col justify-center items-center p-4">
+        <h1 className="text-xl font-bold mb-4">Request Not Found</h1>
         <Button onClick={() => navigate("/")}>Return Home</Button>
       </div>
     );
@@ -66,119 +67,53 @@ const JobDetails: React.FC = () => {
         return "Lockout Assistance";
       case "tow":
         return "Towing Service";
+      case "charging":
+        return "EV Charging";
     }
-  };
-  
-  const updateJobStatus = (newStatus: JobStatus) => {
-    setIsUpdating(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      // Update job in state
-      const updatedJobs = myJobs.map((j) => {
-        if (j.id === job.id) {
-          return {
-            ...j,
-            status: newStatus,
-            ...(newStatus === "completed" ? { completedAt: new Date() } : {})
-          };
-        }
-        return j;
-      });
-      
-      setMyJobs(updatedJobs);
-      
-      // Notify user
-      toast.success(`Job status updated to ${newStatus}`);
-      
-      setIsUpdating(false);
-      
-      // If completed, navigate back after a delay
-      if (newStatus === "completed") {
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
-      }
-    }, 1000);
-  };
-  
-  const getNextActionButton = () => {
-    if (userRole === "worker") {
-      switch (job.status) {
-        case "accepted":
-          return (
-            <Button className="app-button" onClick={() => updateJobStatus("enroute")} disabled={isUpdating}>
-              Start Navigation
-            </Button>
-          );
-        case "enroute":
-          return (
-            <Button className="app-button" onClick={() => updateJobStatus("arrived")} disabled={isUpdating}>
-              Mark as Arrived
-            </Button>
-          );
-        case "arrived":
-          return (
-            <Button className="app-button" onClick={() => updateJobStatus("inProgress")} disabled={isUpdating}>
-              Start Work
-            </Button>
-          );
-        case "inProgress":
-          return (
-            <Button className="app-button" onClick={() => updateJobStatus("completed")} disabled={isUpdating}>
-              Complete Job
-            </Button>
-          );
-        case "completed":
-          return (
-            <Button className="app-button" variant="outline" onClick={() => navigate("/")} disabled={isUpdating}>
-              Back to Dashboard
-            </Button>
-          );
-        default:
-          return null;
-      }
-    }
-    
-    // Customer buttons
-    return (
-      <Button className="app-button" onClick={() => {}} disabled={isUpdating}>
-        Contact Helper
-      </Button>
-    );
   };
   
   const getStatusText = () => {
     switch (job.status) {
       case "requested":
-        return "Waiting for acceptance";
+        return "Request submitted - Finding helper";
+      case "searching":
+        return "Searching for nearby helpers";
+      case "driver_assigned":
       case "accepted":
-        return "Helper has accepted your request";
+        return "Helper assigned to your request";
+      case "driver_enroute":
       case "enroute":
         return "Helper is on the way";
+      case "driver_arrived":
       case "arrived":
-        return "Helper has arrived";
+        return "Helper has arrived at your location";
+      case "in_progress":
       case "inProgress":
-        return "Work in progress";
+        return "Service in progress";
       case "completed":
-        return "Job completed";
+        return "Service completed successfully";
       case "cancelled":
-        return "Job cancelled";
+        return "Request cancelled";
       default:
-        return "Unknown status";
+        return "Request status unknown";
     }
   };
   
   const getStatusColor = () => {
     switch (job.status) {
       case "requested":
+      case "searching":
         return "bg-yellow-500";
+      case "driver_assigned":
       case "accepted":
         return "bg-blue-500";
+      case "driver_enroute":
       case "enroute":
         return "bg-blue-600";
+      case "driver_arrived":
       case "arrived":
         return "bg-indigo-500";
+      case "in_progress":
       case "inProgress":
         return "bg-purple-500";
       case "completed":
@@ -188,6 +123,16 @@ const JobDetails: React.FC = () => {
       default:
         return "bg-gray-500";
     }
+  };
+  
+  const handleContactHelper = () => {
+    toast.success("Contacting your helper...");
+    // Future: Implement actual contact functionality
+  };
+  
+  const handleCancelRequest = () => {
+    toast.success("Request cancelled");
+    navigate("/");
   };
   
   return (
@@ -201,7 +146,7 @@ const JobDetails: React.FC = () => {
         >
           <ArrowLeft />
         </Button>
-        <h1 className="text-lg font-bold">Job Details</h1>
+        <h1 className="text-lg font-bold">Request Details</h1>
       </header>
       
       <main className="flex-1 p-4 flex flex-col gap-5">
@@ -233,7 +178,7 @@ const JobDetails: React.FC = () => {
             <div className="flex items-center gap-2 mb-3 text-sm">
               <MapPin size={14} className="text-muted-foreground" />
               <span className="text-muted-foreground">
-                {job.customerLocation.address || "Location Address"}
+                {job.customerLocation.address || "Your Location"}
               </span>
             </div>
             
@@ -242,7 +187,7 @@ const JobDetails: React.FC = () => {
               <span className="text-muted-foreground">
                 {job.estimatedArrival 
                   ? `ETA: ${new Date(job.estimatedArrival).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`
-                  : "Arrival time to be determined"}
+                  : "Arrival time will be updated soon"}
               </span>
             </div>
             
@@ -252,31 +197,31 @@ const JobDetails: React.FC = () => {
           </Card>
         </div>
         
-        {/* User Details */}
-        <div>
-          <h2 className="font-bold mb-2">
-            {userRole === "worker" ? "Customer Details" : "Helper Details"}
-          </h2>
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center">
-                <User className="h-6 w-6" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold">{userRole === "worker" ? job.customerName : "Mike Johnson"}</h3>
-                <div className="flex items-center gap-1">
-                  <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-                  <span className="text-xs">4.9</span>
+        {/* Helper Details - Only show if helper is assigned */}
+        {(job.driverName || job.status !== "requested") && (
+          <div>
+            <h2 className="font-bold mb-2">Your Helper</h2>
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-secondary flex items-center justify-center">
+                  <User className="h-6 w-6" />
                 </div>
+                <div className="flex-1">
+                  <h3 className="font-bold">{job.driverName || "Helper Assigned"}</h3>
+                  <div className="flex items-center gap-1">
+                    <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
+                    <span className="text-xs">4.9</span>
+                  </div>
+                </div>
+                <Button variant="outline" size="icon" onClick={handleContactHelper}>
+                  <Phone size={16} />
+                </Button>
               </div>
-              <Button variant="outline" size="icon">
-                <Phone size={16} />
-              </Button>
-            </div>
-          </Card>
-        </div>
+            </Card>
+          </div>
+        )}
         
-        {/* Status Progress */}
+        {/* Progress Timeline */}
         {job.status !== "cancelled" && (
           <div>
             <h2 className="font-bold mb-2">Progress</h2>
@@ -292,19 +237,19 @@ const JobDetails: React.FC = () => {
                 </p>
               </div>
               
-              {/* Accepted */}
+              {/* Helper Found */}
               <div className="relative">
                 <div className={`absolute -left-[1.65rem] h-6 w-6 rounded-full flex items-center justify-center ${
-                  job.status !== "requested" 
+                  ["driver_assigned", "accepted", "driver_enroute", "enroute", "driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status)
                     ? "bg-green-500" 
                     : "bg-secondary border border-muted"
                 }`}>
-                  {job.status !== "requested" && (
+                  {["driver_assigned", "accepted", "driver_enroute", "enroute", "driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status) && (
                     <CircleCheckIcon className="h-4 w-4 text-white" />
                   )}
                 </div>
-                <p className={`font-medium ${job.status === "requested" ? "text-muted-foreground" : ""}`}>
-                  Request Accepted
+                <p className={`font-medium ${!["driver_assigned", "accepted", "driver_enroute", "enroute", "driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status) ? "text-muted-foreground" : ""}`}>
+                  Helper Found
                 </p>
                 {job.acceptedAt && (
                   <p className="text-xs text-muted-foreground">
@@ -313,18 +258,18 @@ const JobDetails: React.FC = () => {
                 )}
               </div>
               
-              {/* EnRoute */}
+              {/* En Route */}
               <div className="relative">
                 <div className={`absolute -left-[1.65rem] h-6 w-6 rounded-full flex items-center justify-center ${
-                  ["enroute", "arrived", "inProgress", "completed"].includes(job.status) 
+                  ["driver_enroute", "enroute", "driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status)
                     ? "bg-green-500" 
                     : "bg-secondary border border-muted"
                 }`}>
-                  {["enroute", "arrived", "inProgress", "completed"].includes(job.status) && (
+                  {["driver_enroute", "enroute", "driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status) && (
                     <CircleCheckIcon className="h-4 w-4 text-white" />
                   )}
                 </div>
-                <p className={`font-medium ${!["enroute", "arrived", "inProgress", "completed"].includes(job.status) ? "text-muted-foreground" : ""}`}>
+                <p className={`font-medium ${!["driver_enroute", "enroute", "driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status) ? "text-muted-foreground" : ""}`}>
                   Helper En Route
                 </p>
               </div>
@@ -332,15 +277,15 @@ const JobDetails: React.FC = () => {
               {/* Arrived */}
               <div className="relative">
                 <div className={`absolute -left-[1.65rem] h-6 w-6 rounded-full flex items-center justify-center ${
-                  ["arrived", "inProgress", "completed"].includes(job.status) 
+                  ["driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status)
                     ? "bg-green-500" 
                     : "bg-secondary border border-muted"
                 }`}>
-                  {["arrived", "inProgress", "completed"].includes(job.status) && (
+                  {["driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status) && (
                     <CircleCheckIcon className="h-4 w-4 text-white" />
                   )}
                 </div>
-                <p className={`font-medium ${!["arrived", "inProgress", "completed"].includes(job.status) ? "text-muted-foreground" : ""}`}>
+                <p className={`font-medium ${!["driver_arrived", "arrived", "in_progress", "inProgress", "completed"].includes(job.status) ? "text-muted-foreground" : ""}`}>
                   Helper Arrived
                 </p>
               </div>
@@ -371,12 +316,19 @@ const JobDetails: React.FC = () => {
         
         {/* Actions */}
         <div className="mt-auto space-y-2">
-          {getNextActionButton()}
-          
-          {job.status !== "completed" && job.status !== "cancelled" && (
-            <Button variant="outline" className="w-full" onClick={() => {}}>
-              Cancel {userRole === "worker" ? "Job" : "Request"}
+          {job.status === "completed" ? (
+            <Button className="w-full" onClick={() => navigate("/")}>
+              Back to Home
             </Button>
+          ) : (
+            <>
+              <Button className="w-full" onClick={handleContactHelper}>
+                Contact Helper
+              </Button>
+              <Button variant="outline" className="w-full" onClick={handleCancelRequest}>
+                Cancel Request
+              </Button>
+            </>
           )}
         </div>
       </main>

@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { JobRequest } from "@/contexts/AppContext";
+import { ServiceRequest } from "@/contexts/AppContext";
 import { Button } from "@/components/ui/button";
 import MapView from "@/components/MapView";
 import { Battery, Car, Flag, Fuel, Lock, Star, User } from "lucide-react";
@@ -10,7 +9,7 @@ import { Card } from "@/components/ui/card";
 const RequestConfirmation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const job = location.state?.job as JobRequest;
+  const job = location.state?.job as ServiceRequest;
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [workerFound, setWorkerFound] = useState(false);
   const [workerDetails, setWorkerDetails] = useState<{

@@ -19,7 +19,11 @@ export type JobStatus =
   | "driver_arrived"
   | "in_progress"
   | "completed"
-  | "cancelled";
+  | "cancelled"
+  | "accepted"
+  | "enroute"
+  | "arrived"
+  | "inProgress";
 
 // Define the job data structure for customer requests
 export interface ServiceRequest {
@@ -47,7 +51,13 @@ export interface ServiceRequest {
   estimatedArrival?: Date;
   price?: number;
   safetyPin?: string;
+  acceptedBy?: string;
+  acceptedAt?: Date;
+  completedAt?: Date;
 }
+
+// Create type alias for backward compatibility
+export type JobRequest = ServiceRequest;
 
 // Define customer user data
 export interface Customer {
