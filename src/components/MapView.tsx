@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Loader } from '@googlemaps/js-api-loader';
+import { config } from '@/config/env';
 
 interface MapViewProps {
   height?: string;
@@ -30,9 +31,16 @@ const MapView: React.FC<MapViewProps> = ({
         setIsLoading(true);
         setError(null);
         
+        // Check if API key is available
+        if (!config.googleMapsApiKey) {
+          setError('Google Maps API key not configured');
+          setIsLoading(false);
+          return;
+        }
+        
         // Initialize Google Maps
         const loader = new Loader({
-          apiKey: process.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY_HERE',
+          apiKey: config.googleMapsApiKey,
           version: 'weekly',
           libraries: ['places']
         });
