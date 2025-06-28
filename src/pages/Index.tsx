@@ -1,6 +1,6 @@
 
 import React from "react";
-import { useApp } from "@/contexts/AppContext";
+import { Link } from "react-router-dom";
 import CustomerHome from "@/pages/CustomerHome";
 
 const Index: React.FC = () => {
@@ -27,24 +27,24 @@ const Index: React.FC = () => {
       {/* Footer Navigation */}
       <nav className="border-t p-4">
         <div className="flex justify-around items-center">
-          <a href="/" className="flex flex-col items-center gap-1">
+          <Link to="/" className="flex flex-col items-center gap-1">
             <div className="h-6 w-6 bg-primary rounded-full flex items-center justify-center">
               <span className="text-white text-xs">H</span>
             </div>
             <span className="text-xs">Home</span>
-          </a>
-          <a href="/services" className="flex flex-col items-center gap-1">
+          </Link>
+          <Link to="/services" className="flex flex-col items-center gap-1">
             <div className="h-6 w-6 bg-secondary rounded-full flex items-center justify-center">
               <span className="text-secondary-foreground text-xs">S</span>
             </div>
             <span className="text-xs">Services</span>
-          </a>
-          <a href="/profile" className="flex flex-col items-center gap-1">
+          </Link>
+          <Link to="/profile" className="flex flex-col items-center gap-1">
             <div className="h-6 w-6 bg-secondary rounded-full flex items-center justify-center">
               <span className="text-secondary-foreground text-xs">P</span>
             </div>
             <span className="text-xs">Profile</span>
-          </a>
+          </Link>
         </div>
       </nav>
     </div>

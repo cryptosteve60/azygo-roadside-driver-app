@@ -9,6 +9,10 @@ import Index from "./pages/Index";
 import RequestService from "./pages/RequestService";
 import RequestConfirmation from "./pages/RequestConfirmation";
 import JobDetails from "./pages/JobDetails";
+import Services from "./pages/Services";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,10 +26,13 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/request/:serviceType" element={<RequestService />} />
             <Route path="/request-confirmation" element={<RequestConfirmation />} />
             <Route path="/job/:jobId" element={<JobDetails />} />
-            {/* New customer-focused routes will be added here */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
