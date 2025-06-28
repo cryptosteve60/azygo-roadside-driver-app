@@ -1,6 +1,6 @@
 
 export const config = {
-  googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_AIzaSyB1OqXUwauWo10wiPjJmiRdqhnIT-1j9Ug || '',
+  googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
   isDevelopment: import.meta.env.DEV,
   isProduction: import.meta.env.PROD,
 };
@@ -10,7 +10,7 @@ export const checkRequiredEnvVars = () => {
   const missing = [];
   
   if (!config.googleMapsApiKey) {
-    missing.push('VITE_GOOGLE_MAPS_AIzaSyB1OqXUwauWo10wiPjJmiRdqhnIT-1j9Ug');
+    missing.push('VITE_GOOGLE_MAPS_API_KEY');
   }
   
   if (missing.length > 0) {
