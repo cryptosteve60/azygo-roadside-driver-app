@@ -70,7 +70,7 @@ const CustomerHome: React.FC = () => {
       
       {/* Services Section */}
       <section>
-        <h2 className="text-lg font-bold mb-3">Our Services</h2>
+        <h2 className="text-lg font-bold mb-3 text-center">Our Services</h2>
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <ServiceCard 
             type="battery" 

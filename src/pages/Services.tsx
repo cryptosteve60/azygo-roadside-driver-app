@@ -1,8 +1,8 @@
-
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Battery, Car, Fuel, Lock, Flag, Plug, Clock, Shield, Star } from "lucide-react";
+import { Battery, Car, Fuel, Lock, Flag, Plug, Clock, Shield, Star, Truck } from "lucide-react";
+import Layout from "@/components/Layout";
 
 const services = [
   {
@@ -105,138 +105,140 @@ export default function Services() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-40">
-        <div className="container max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold">
-                A
+    <Layout>
+      <div className="min-h-screen bg-background">
+        {/* Header */}
+        <header className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-40">
+          <div className="container max-w-7xl mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+                  <Truck className="h-5 w-5" />
+                </div>
+                <h1 className="text-lg font-bold">Ayzgo Services</h1>
               </div>
-              <h1 className="text-lg font-bold">Ayzgo Services</h1>
+              <Button variant="outline" onClick={() => navigate("/")}>
+                Back to Home
+              </Button>
             </div>
-            <Button variant="outline" onClick={() => navigate("/")}>
-              Back to Home
-            </Button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-orange-50 to-white py-12">
-        <div className="container max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-4">Professional Roadside Assistance</h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Industry-leading roadside services available 24/7. Our certified technicians follow strict safety protocols and industry standards to get you back on the road safely.
-          </p>
-          
-          <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            <div className="flex items-center gap-3">
-              <Clock className="h-8 w-8 text-primary" />
-              <div className="text-left">
-                <h3 className="font-semibold">Fast Response</h3>
-                <p className="text-sm text-muted-foreground">Average 20-30 min arrival</p>
+        {/* Hero Section */}
+        <section className="bg-gradient-to-b from-orange-50 to-white py-12">
+          <div className="container max-w-7xl mx-auto px-4 text-center">
+            <h1 className="text-4xl font-bold mb-4">Professional Roadside Assistance</h1>
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Industry-leading roadside services available 24/7. Our certified technicians follow strict safety protocols and industry standards to get you back on the road safely.
+            </p>
+            
+            <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              <div className="flex items-center gap-3">
+                <Clock className="h-8 w-8 text-primary" />
+                <div className="text-left">
+                  <h3 className="font-semibold">Fast Response</h3>
+                  <p className="text-sm text-muted-foreground">Average 20-30 min arrival</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Shield className="h-8 w-8 text-primary" />
-              <div className="text-left">
-                <h3 className="font-semibold">Fully Insured</h3>
-                <p className="text-sm text-muted-foreground">Licensed & bonded technicians</p>
+              <div className="flex items-center gap-3">
+                <Shield className="h-8 w-8 text-primary" />
+                <div className="text-left">
+                  <h3 className="font-semibold">Fully Insured</h3>
+                  <p className="text-sm text-muted-foreground">Licensed & bonded technicians</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Star className="h-8 w-8 text-primary" />
-              <div className="text-left">
-                <h3 className="font-semibold">Rated 4.9/5</h3>
-                <p className="text-sm text-muted-foreground">50,000+ satisfied customers</p>
+              <div className="flex items-center gap-3">
+                <Star className="h-8 w-8 text-primary" />
+                <div className="text-left">
+                  <h3 className="font-semibold">Rated 4.9/5</h3>
+                  <p className="text-sm text-muted-foreground">50,000+ satisfied customers</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Services Grid */}
-      <section className="py-12">
-        <div className="container max-w-7xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => {
-              const IconComponent = service.icon;
-              return (
-                <Card key={service.type} className="p-6 hover:shadow-lg transition-shadow">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="p-3 bg-orange-100 rounded-lg">
-                      <IconComponent className="h-8 w-8 text-primary" />
+        {/* Services Grid */}
+        <section className="py-12">
+          <div className="container max-w-7xl mx-auto px-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {services.map((service) => {
+                const IconComponent = service.icon;
+                return (
+                  <Card key={service.type} className="p-6 hover:shadow-lg transition-shadow">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="p-3 bg-orange-100 rounded-lg">
+                        <IconComponent className="h-8 w-8 text-primary" />
+                      </div>
+                      <span className="text-2xl font-bold text-primary">{service.price}</span>
                     </div>
-                    <span className="text-2xl font-bold text-primary">{service.price}</span>
-                  </div>
-                  
-                  <h3 className="text-xl font-bold mb-2">{service.title}</h3>
-                  <p className="text-muted-foreground mb-4">{service.description}</p>
-                  
-                  <div className="space-y-3 mb-6">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Estimated Time:</span>
-                      <span className="font-medium">{service.timeEstimate}</span>
+                    
+                    <h3 className="text-xl font-bold mb-2">{service.title}</h3>
+                    <p className="text-muted-foreground mb-4">{service.description}</p>
+                    
+                    <div className="space-y-3 mb-6">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Estimated Time:</span>
+                        <span className="font-medium">{service.timeEstimate}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Availability:</span>
+                        <span className="font-medium">{service.coverage}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Availability:</span>
-                      <span className="font-medium">{service.coverage}</span>
+                    
+                    <div className="mb-6">
+                      <h4 className="font-semibold mb-2">What's Included:</h4>
+                      <ul className="text-sm text-muted-foreground space-y-1">
+                        {service.details.map((detail, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span>•</span>
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-                  
-                  <div className="mb-6">
-                    <h4 className="font-semibold mb-2">What's Included:</h4>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      {service.details.map((detail, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span>•</span>
-                          <span>{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <Button 
-                    className="w-full"
-                    onClick={() => handleRequestService(service.type)}
-                  >
-                    Request {service.title}
-                  </Button>
-                </Card>
-              );
-            })}
+                    
+                    <Button 
+                      className="w-full"
+                      onClick={() => handleRequestService(service.type)}
+                    >
+                      Request {service.title}
+                    </Button>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Industry Standards Section */}
-      <section className="bg-gray-50 py-12">
-        <div className="container max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Industry Standards & Certifications</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Safety Standards</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>• ANSI/ACCT safety protocols compliance</li>
-                <li>• DOT-certified equipment and procedures</li>
-                <li>• OSHA workplace safety standards</li>
-                <li>• Regular safety training and certification</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold mb-4">Quality Assurance</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>• ISO 9001:2015 quality management</li>
-                <li>• AAA-approved service standards</li>
-                <li>• Continuous technician training programs</li>
-                <li>• Customer satisfaction guarantee</li>
-              </ul>
+        {/* Industry Standards Section */}
+        <section className="bg-gray-50 py-12">
+          <div className="container max-w-4xl mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-8">Industry Standards & Certifications</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Safety Standards</h3>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• ANSI/ACCT safety protocols compliance</li>
+                  <li>• DOT-certified equipment and procedures</li>
+                  <li>• OSHA workplace safety standards</li>
+                  <li>• Regular safety training and certification</li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Quality Assurance</h3>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• ISO 9001:2015 quality management</li>
+                  <li>• AAA-approved service standards</li>
+                  <li>• Continuous technician training programs</li>
+                  <li>• Customer satisfaction guarantee</li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </Layout>
   );
 }
