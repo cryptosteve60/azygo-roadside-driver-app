@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from "react";
 import DriverLayout from "@/components/DriverLayout";
-import OnlineStatusToggle from "@/components/OnlineStatusToggle";
-import EarningsCard from "@/components/EarningsCard";
+import EazyGoToggle from "@/components/EazyGoToggle";
+import LocationDisplay from "@/components/LocationDisplay";
+import MapView from "@/components/MapView";
 import JobRequestCard from "@/components/JobRequestCard";
 import { useDriver, DriverJob } from "@/contexts/DriverContext";
 import { useToast } from "@/hooks/use-toast";
@@ -67,12 +68,12 @@ const DriverHome: React.FC = () => {
     setIsOnline(online);
     if (online) {
       toast({
-        title: "You're now online! 🚗",
+        title: "EAZY GO is ON! 🚗",
         description: "You'll start receiving job requests in your area."
       });
     } else {
       toast({
-        title: "You're now offline",
+        title: "EAZY GO is OFF",
         description: "You won't receive new job requests."
       });
     }
@@ -108,45 +109,49 @@ const DriverHome: React.FC = () => {
   return (
     <DriverLayout>
       <div className="max-w-2xl mx-auto">
+        {/* Location Display */}
+        <LocationDisplay city="Los Angeles" state="CA" />
+        
+        {/* EAZY GO Toggle */}
+        <EazyGoToggle isOnline={isOnline} onToggle={handleToggleOnline} />
+        
+        {/* Map View */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">Welcome back, {driver.name}!</h1>
-          <p className="text-muted-foreground">Ready to help customers on the road today?</p>
+          <MapView 
+            height="h-[300px]" 
+            showCurrentLocation={true}
+            interactive={true}
+          />
         </div>
 
-        <OnlineStatusToggle isOnline={isOnline} onToggle={handleToggleOnline} />
-        
-        <EarningsCard 
-          today={driver.earnings.today}
-          week={driver.earnings.week}
-          month={driver.earnings.month}
-        />
+        {/* Available Jobs Section */}
+        {isOnline && mockJobs.length > 0 && (
+          <div className="mb-6">
+            <h2 className="text-xl font-bold mb-4">Available Requests</h2>
+            <div className="space-y-4">
+              {mockJobs.map((job) => (
+                <JobRequestCard
+                  key={job.id}
+                  job={job}
+                  onAccept={handleAcceptJob}
+                  onDecline={handleDeclineJob}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
-        {isOnline && (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Available Jobs</h2>
-            {mockJobs.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">No jobs available right now.</p>
-                <p className="text-sm text-muted-foreground mt-1">New requests will appear here automatically.</p>
-              </div>
-            ) : (
-              <div>
-                {mockJobs.map((job) => (
-                  <JobRequestCard
-                    key={job.id}
-                    job={job}
-                    onAccept={handleAcceptJob}
-                    onDecline={handleDeclineJob}
-                  />
-                ))}
-              </div>
-            )}
+        {/* Status Messages */}
+        {isOnline && mockJobs.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Looking for requests...</p>
+            <p className="text-sm text-muted-foreground mt-1">New requests will appear here automatically.</p>
           </div>
         )}
 
         {!isOnline && (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">Go online to start receiving job requests!</p>
+            <p className="text-muted-foreground">Tap "EAZY GO!" to start receiving requests!</p>
           </div>
         )}
       </div>
