@@ -1,12 +1,10 @@
-
 export default function IndustryStandards() {
-  return (
-    <section className="bg-gray-50 py-12">
+  return <section className="bg-gray-50 py-12">
       <div className="container max-w-4xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Industry Standards & Certifications</h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-xl font-semibold mb-4">Safety Standards</h3>
+            <h3 className="text-xl font-semibold mb-4 text-center">Safety Standards</h3>
             <ul className="space-y-2 text-muted-foreground">
               <li>• ANSI/ACCT safety protocols compliance</li>
               <li>• DOT-certified equipment and procedures</li>
@@ -15,7 +13,7 @@ export default function IndustryStandards() {
             </ul>
           </div>
           <div>
-            <h3 className="text-xl font-semibold mb-4">Quality Assurance</h3>
+            <h3 className="text-xl font-semibold mb-4 text-center">Quality Assurance</h3>
             <ul className="space-y-2 text-muted-foreground">
               <li>• ISO 9001:2015 quality management</li>
               <li>• AAA-approved service standards</li>
@@ -25,6 +23,5 @@ export default function IndustryStandards() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
