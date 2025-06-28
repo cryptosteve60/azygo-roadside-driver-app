@@ -1,6 +1,6 @@
 
 export const config = {
-  googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+  googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_AIzaSyB1OqXUwauWo10wiPjJmiRdqhnIT-1j9Ug || '',
   isDevelopment: import.meta.env.DEV,
   isProduction: import.meta.env.PROD,
 };
