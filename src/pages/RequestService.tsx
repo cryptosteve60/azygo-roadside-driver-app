@@ -153,16 +153,15 @@ export default function RequestService() {
           </div>
         </div>
         
-        {/* Issue Description */}
+        {/* Additional Information */}
         <div>
-          <Label htmlFor="description">Describe Your Issue *</Label>
+          <Label htmlFor="description">Additional Information</Label>
           <Textarea 
             id="description" 
             className="app-input min-h-[100px]" 
-            placeholder="Tell us what's wrong with your vehicle..."
+            placeholder="Any additional details that might help..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
           />
         </div>
 
