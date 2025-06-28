@@ -42,10 +42,10 @@ export default function ServiceCard({ type, title, price, description }: Service
         <div className="p-2 bg-accent rounded-md">
           {getIcon()}
         </div>
+        <h3 className="font-bold text-lg mb-1">{title}</h3>
         <span className="text-primary font-bold">{price}</span>
       </div>
       
-      <h3 className="font-bold text-lg mb-1">{title}</h3>
       <p className="text-muted-foreground text-sm mb-4 flex-grow">{description}</p>
       
       <Button 
