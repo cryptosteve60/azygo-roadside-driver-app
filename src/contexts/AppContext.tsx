@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { googleMapsService } from "@/services/googleMapsService";
 
 // Define the service types our app will offer
 export type ServiceType = 
@@ -93,6 +94,9 @@ interface AppContextType {
   // App state
   isAuthenticated: boolean;
   setIsAuthenticated: (auth: boolean) => void;
+  
+  // Google Maps
+  updateLocationAddress: (lat: number, lng: number) => Promise<string>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -124,45 +128,40 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [isLocationLoading, setIsLocationLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
 
-  // Get user's current location
+  // Get user's current location using Google Maps service
   useEffect(() => {
-    const getCurrentLocation = () => {
+    const getCurrentLocation = async () => {
       setIsLocationLoading(true);
       setLocationError(null);
       
-      if (!navigator.geolocation) {
-        setLocationError("Geolocation is not supported by this browser.");
-        setIsLocationLoading(false);
+      try {
+        // Load Google Maps API first
+        await googleMapsService.loadGoogleMaps();
+        
+        // Get current location
+        const location = await googleMapsService.getCurrentLocation();
+        setCurrentLocation(location);
+      } catch (error) {
+        console.error('Error getting location:', error);
+        setLocationError(error instanceof Error ? error.message : 'Location access failed');
         // Fallback to LA
         setCurrentLocation({ lat: 34.0522, lng: -118.2437 });
-        return;
+      } finally {
+        setIsLocationLoading(false);
       }
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCurrentLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-          setIsLocationLoading(false);
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          setLocationError(error.message);
-          setIsLocationLoading(false);
-          // Fallback to LA
-          setCurrentLocation({ lat: 34.0522, lng: -118.2437 });
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000, // 5 minutes
-        }
-      );
     };
 
     getCurrentLocation();
   }, []);
+
+  const updateLocationAddress = async (lat: number, lng: number): Promise<string> => {
+    try {
+      return await googleMapsService.reverseGeocode(lat, lng);
+    } catch (error) {
+      console.error('Error getting address:', error);
+      return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+  };
 
   return (
     <AppContext.Provider
@@ -179,6 +178,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         isLocationLoading,
         isAuthenticated,
         setIsAuthenticated,
+        updateLocationAddress,
       }}
     >
       {children}

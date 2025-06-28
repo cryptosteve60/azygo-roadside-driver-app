@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function RequestService() {
   const { serviceType } = useParams<{ serviceType: ServiceType }>();
-  const { customer, currentLocation, setCurrentRequest } = useApp();
+  const { customer, currentLocation, setCurrentRequest, updateLocationAddress } = useApp();
   const { toast } = useToast();
   const navigate = useNavigate();
   
@@ -19,15 +18,29 @@ export default function RequestService() {
   const [vehicleDetails, setVehicleDetails] = useState("");
   const [description, setDescription] = useState("");
   const [estimatedPrice, setEstimatedPrice] = useState(0);
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
   
   useEffect(() => {
-    if (currentLocation) {
-      setLocation(`${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`);
-    }
+    const loadLocationAddress = async () => {
+      if (currentLocation) {
+        setIsLoadingAddress(true);
+        try {
+          const address = await updateLocationAddress(currentLocation.lat, currentLocation.lng);
+          setLocation(address);
+        } catch (error) {
+          console.error('Error loading address:', error);
+          setLocation(`${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`);
+        }
+        setIsLoadingAddress(false);
+      }
+    };
+
+    loadLocationAddress();
+    
     if (serviceType) {
       setEstimatedPrice(getServicePrice(serviceType));
     }
-  }, [currentLocation, serviceType]);
+  }, [currentLocation, serviceType, updateLocationAddress]);
   
   if (!serviceType) {
     return <div>Invalid service type</div>;
@@ -93,9 +106,9 @@ export default function RequestService() {
       description: "We're finding the best driver for you."
     });
     
-    // Navigate to searching screen
-    navigate('/searching', { 
-      state: { serviceRequest: newServiceRequest } 
+    // Navigate to confirmation screen
+    navigate('/request-confirmation', { 
+      state: { job: newServiceRequest } 
     });
   };
   
@@ -126,14 +139,15 @@ export default function RequestService() {
             <Input 
               id="location" 
               className="app-input peer" 
-              value={location}
+              value={isLoadingAddress ? "Loading address..." : location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Enter your current location"
+              disabled={isLoadingAddress}
             />
             <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground peer-focus:text-primary" />
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            📍 We'll use your GPS location for accuracy
+            📍 Using your GPS location for accuracy
           </p>
         </div>
         
