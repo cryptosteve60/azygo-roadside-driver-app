@@ -4,7 +4,7 @@ import { websocketService } from '@/services/websocketService';
 import { notificationService } from '@/services/notificationService';
 import { locationService } from '@/services/locationService';
 import { apiService } from '@/services/apiService';
-import { useDriver } from '@/contexts/DriverContext';
+import { useDriver, DriverJob } from '@/contexts/DriverContext';
 import { useToast } from '@/hooks/use-toast';
 
 export const useRealTimeConnection = () => {
@@ -46,8 +46,8 @@ export const useRealTimeConnection = () => {
   const handleNewJob = useCallback(async (jobData: any) => {
     console.log('New job received:', jobData);
     
-    // Update available jobs
-    setAvailableJobs(prev => [...prev, jobData]);
+    // Update available jobs with proper typing
+    setAvailableJobs((prev: DriverJob[]) => [...prev, jobData as DriverJob]);
     
     // Show notification
     await notificationService.showJobNotification(jobData);
