@@ -14,11 +14,11 @@ const Logo: React.FC<LogoProps> = ({ size = "md", className = "" }) => {
   };
 
   return (
-    <div className={`${sizeClasses[size]} rounded-full bg-white flex items-center justify-center ${className}`}>
+    <div className={`${sizeClasses[size]} flex items-center justify-center ${className}`}>
       <img 
-        src="/lovable-uploads/logo-square.png" 
+        src="/lovable-uploads/7c42b02b-c831-4e0f-9d90-c5bea3cb1b4e.png" 
         alt="Ayzgo Logo" 
-        className="h-full w-full object-contain rounded-full"
+        className="h-full w-full object-contain"
       />
     </div>
   );
