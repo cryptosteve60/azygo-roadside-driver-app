@@ -1,4 +1,3 @@
-
 interface NotificationPayload {
   title: string;
   body: string;
@@ -54,8 +53,7 @@ class NotificationService {
         // Fallback to basic notification - only use supported properties
         new Notification(payload.title, {
           body: payload.body,
-          icon: payload.icon || '/lovable-uploads/7c42b02b-c831-4e0f-9d90-c5bea3cb1b4e.png',
-          data: payload.data
+          icon: payload.icon || '/lovable-uploads/7c42b02b-c831-4e0f-9d90-c5bea3cb1b4e.png'
         });
       }
     } catch (error) {
