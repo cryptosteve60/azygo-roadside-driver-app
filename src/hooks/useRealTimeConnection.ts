@@ -1,4 +1,3 @@
-
 import { useEffect, useCallback } from 'react';
 import { websocketService } from '@/services/websocketService';
 import { notificationService } from '@/services/notificationService';
@@ -8,7 +7,7 @@ import { useDriver, DriverJob } from '@/contexts/DriverContext';
 import { useToast } from '@/hooks/use-toast';
 
 export const useRealTimeConnection = () => {
-  const { driver, setAvailableJobs, setCurrentJob, isOnline } = useDriver();
+  const { driver, setAvailableJobs, setCurrentJob, isOnline, availableJobs } = useDriver();
   const { toast } = useToast();
 
   // Initialize services
@@ -46,8 +45,8 @@ export const useRealTimeConnection = () => {
   const handleNewJob = useCallback(async (jobData: any) => {
     console.log('New job received:', jobData);
     
-    // Update available jobs with proper typing
-    setAvailableJobs((prev: DriverJob[]) => [...prev, jobData as DriverJob]);
+    // Update available jobs - use direct array update instead of function
+    setAvailableJobs([...availableJobs, jobData as DriverJob]);
     
     // Show notification
     await notificationService.showJobNotification(jobData);
@@ -57,7 +56,7 @@ export const useRealTimeConnection = () => {
       title: "New Job Available! 🚗",
       description: `${jobData.serviceType} service - $${jobData.price}`,
     });
-  }, [setAvailableJobs, toast]);
+  }, [setAvailableJobs, availableJobs, toast]);
 
   const handleJobUpdate = useCallback((updateData: any) => {
     console.log('Job update received:', updateData);

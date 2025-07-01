@@ -1,4 +1,3 @@
-
 interface NotificationPayload {
   title: string;
   body: string;
@@ -51,10 +50,11 @@ class NotificationService {
           tag: 'ayzgo-driver'
         });
       } else {
-        // Fallback to basic notification - remove actions as they're not supported
+        // Fallback to basic notification - actions not supported in basic notifications
         new Notification(payload.title, {
           body: payload.body,
-          icon: payload.icon || '/lovable-uploads/7c42b02b-c831-4e0f-9d90-c5bea3cb1b4e.png'
+          icon: payload.icon || '/lovable-uploads/7c42b02b-c831-4e0f-9d90-c5bea3cb1b4e.png',
+          data: payload.data
         });
       }
     } catch (error) {
