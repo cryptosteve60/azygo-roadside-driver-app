@@ -19,6 +19,9 @@ const Logo: React.FC<LogoProps> = ({ size = "md", className = "" }) => {
         src="/lovable-uploads/7c42b02b-c831-4e0f-9d90-c5bea3cb1b4e.png" 
         alt="Ayzgo Logo" 
         className="h-full w-full object-contain"
+        onError={(e) => {
+          console.error('Logo failed to load:', e);
+        }}
       />
     </div>
   );
