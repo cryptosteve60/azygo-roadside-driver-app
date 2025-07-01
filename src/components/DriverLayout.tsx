@@ -1,7 +1,8 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Truck, Home, Briefcase, DollarSign, User } from "lucide-react";
+import { Home, Briefcase, DollarSign, User } from "lucide-react";
+import Logo from "./Logo";
 
 interface DriverLayoutProps {
   children: React.ReactNode;
@@ -15,9 +16,7 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
       {/* Header */}
       <header className="flex justify-between items-center p-4 border-b bg-primary text-primary-foreground">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-full bg-white flex items-center justify-center">
-            <Truck className="h-5 w-5 text-primary" />
-          </div>
+          <Logo size="md" />
           <h1 className="text-lg font-bold">Ayzgo Driver</h1>
         </div>
         <div className="flex items-center gap-2">
