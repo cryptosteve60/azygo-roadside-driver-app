@@ -1,12 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import DriverLayout from "@/components/DriverLayout";
-import AyzgoToggle from "@/components/AyzgoToggle";
-import QuickAccessGrid from "@/components/QuickAccessGrid";
-import LocationDisplay from "@/components/LocationDisplay";
 import MapView from "@/components/MapView";
-import JobRequestCard from "@/components/JobRequestCard";
-import InAppMessaging from "@/components/InAppMessaging";
+import HomeOverlays from "@/components/HomeOverlays";
 import { useDriver, DriverJob } from "@/contexts/DriverContext";
 import { useToast } from "@/hooks/use-toast";
 import { useRealTimeConnection } from "@/hooks/useRealTimeConnection";
@@ -173,6 +169,10 @@ const DriverHome: React.FC = () => {
     }
   };
 
+  const handleToggleMessaging = () => {
+    setShowMessaging(!showMessaging);
+  };
+
   if (!driver) {
     return <div>Loading...</div>;
   }
@@ -187,80 +187,18 @@ const DriverHome: React.FC = () => {
           interactive={true}
         />
         
-        {/* Overlaid Components */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Top Section - Location Display and Quick Access Grid */}
-          <div className="absolute top-4 left-4 right-4 pointer-events-auto space-y-3">
-            <LocationDisplay city="Los Angeles" state="CA" />
-            <QuickAccessGrid />
-          </div>
-          
-          {/* Bottom Section - AYZGO Toggle */}
-          <div className="absolute bottom-20 left-4 right-4 pointer-events-auto">
-            <AyzgoToggle isOnline={isOnline} onToggle={handleToggleOnline} />
-          </div>
-          
-          {/* Available Jobs - Overlay when online */}
-          {isOnline && availableJobs.length > 0 && !currentJob && (
-            <div className="absolute top-32 left-4 right-4 bottom-32 overflow-y-auto pointer-events-auto">
-              <div className="bg-background/95 backdrop-blur-sm rounded-lg p-4 mb-4">
-                <h2 className="text-xl font-bold text-center mb-4">Available Requests</h2>
-                <div className="space-y-4">
-                  {availableJobs.map((job) => (
-                    <JobRequestCard
-                      key={job.id}
-                      job={job}
-                      onAccept={handleAcceptJob}
-                      onDecline={handleDeclineJob}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* In-App Messaging - Show when there's an active job */}
-          {currentJob && showMessaging && (
-            <div className="absolute top-32 left-4 right-4 bottom-32 pointer-events-auto">
-              <InAppMessaging
-                jobId={currentJob.id}
-                customerName={currentJob.customerName}
-                customerId={currentJob.customerId}
-                driverId={driver.id}
-              />
-            </div>
-          )}
-          
-          {/* Status Messages */}
-          {isOnline && availableJobs.length === 0 && !currentJob && (
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto">
-              <div className="bg-background/95 backdrop-blur-sm rounded-lg p-6 text-center">
-                <p className="text-muted-foreground">Looking for requests...</p>
-                <p className="text-sm text-muted-foreground mt-1">New requests will appear here automatically.</p>
-              </div>
-            </div>
-          )}
-
-          {/* Active Job Indicator */}
-          {currentJob && (
-            <div className="absolute top-32 left-4 right-4 pointer-events-auto">
-              <div className="bg-primary/95 backdrop-blur-sm rounded-lg p-4 text-primary-foreground">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-bold">Active Job: {currentJob.customerName}</h3>
-                    <p className="text-sm opacity-90">{currentJob.serviceType} - ${currentJob.price}</p>
-                  </div>
-                  <button
-                    onClick={() => setShowMessaging(!showMessaging)}
-                    className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-sm"
-                  >
-                    {showMessaging ? 'Hide Chat' : 'Show Chat'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* All Overlaid Components */}
+        <HomeOverlays
+          isOnline={isOnline}
+          availableJobs={availableJobs}
+          currentJob={currentJob}
+          driver={driver}
+          showMessaging={showMessaging}
+          onToggleOnline={handleToggleOnline}
+          onAcceptJob={handleAcceptJob}
+          onDeclineJob={handleDeclineJob}
+          onToggleMessaging={handleToggleMessaging}
+        />
       </div>
     </DriverLayout>
   );
