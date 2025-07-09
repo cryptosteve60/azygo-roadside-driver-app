@@ -24,3 +24,16 @@ The AZYGO Driver App is a mobile application built for independent contractors p
 1. Clone the repo:
    ```bash
    git clone https://github.com/azygo/driver-app.git
+2. Install dependencies:
+   
+   npm install
+
+3.Create a .env file with your Firebase, Stripe, and API keys.
+
+4. Run the app:
+
+npm start
+
+📄 License
+MIT License
+
