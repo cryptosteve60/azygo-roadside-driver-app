@@ -67,8 +67,8 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
         <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
       </div>
 
-      {/* Location Display - Under AYZGO Button */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto">
+      {/* Location Display - Left aligned under AYZGO Button */}
+      <div className="fixed bottom-8 left-4 z-40 pointer-events-auto">
         <LocationDisplay />
       </div>
       

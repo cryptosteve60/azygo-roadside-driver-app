@@ -41,7 +41,7 @@ const LocationDisplay: React.FC = () => {
   return (
     <div className="bg-background/95 backdrop-blur-sm rounded-lg p-2 shadow-lg border-0 flex items-center gap-2">
       <MapPin className="h-4 w-4 text-primary" />
-      <div className="text-center">
+      <div className="text-left">
         <p className="text-sm font-medium">
           {isLoading ? "Getting location..." : location}
         </p>
