@@ -14,6 +14,8 @@ import CommunityModal from "./CommunityModal";
 import RewardsModal from "./RewardsModal";
 import LocationModal from "./LocationModal";
 import SafetyModal from "./SafetyModal";
+import LocationOverlayDisplay from "./LocationOverlayDisplay";
+import { Button } from "@/components/ui/button";
 import { DriverJob, Driver } from "@/contexts/DriverContext";
 
 interface HomeOverlaysProps {
@@ -40,6 +42,7 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
   onToggleMessaging,
 }) => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [locationDisplayMode, setLocationDisplayMode] = useState<'under' | 'overlay'>('under');
 
   const openModal = (modalId: string) => {
     setActiveModal(modalId);
@@ -51,6 +54,26 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
 
   return (
     <div className="absolute inset-0 pointer-events-none">      
+      {/* Location Display Mode Selector */}
+      <div className="absolute top-3 right-3 pointer-events-auto z-50 flex gap-2">
+        <Button
+          size="sm"
+          variant={locationDisplayMode === 'under' ? 'default' : 'outline'}
+          onClick={() => setLocationDisplayMode('under')}
+          className="text-xs"
+        >
+          Under
+        </Button>
+        <Button
+          size="sm"
+          variant={locationDisplayMode === 'overlay' ? 'default' : 'outline'}
+          onClick={() => setLocationDisplayMode('overlay')}
+          className="text-xs"
+        >
+          Overlay
+        </Button>
+      </div>
+
       {/* Floating Icons */}
       <div className="pointer-events-auto">
         <FloatingRewardsIcon onClick={() => openModal('rewards')} />
@@ -62,15 +85,26 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
         <FloatingLocationIcon onClick={() => openModal('location')} />
       </div>
       
-      {/* AYZGO Toggle - Square Bottom Center */}
+      {/* AYZGO Toggle with Location Options */}
       <div className="pointer-events-auto">
-        <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
+        {locationDisplayMode === 'overlay' ? (
+          <AyzgoToggle 
+            isOnline={isOnline} 
+            onToggle={onToggleOnline}
+            showLocationOverlay={true}
+            location={<LocationOverlayDisplay />}
+          />
+        ) : (
+          <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
+        )}
       </div>
       
-      {/* GPS Location Display - Under AYZGO Button */}
-      <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 pointer-events-auto">
-        <LocationDisplay />
-      </div>
+      {/* GPS Location Display - Under AYZGO Button (Option A) */}
+      {locationDisplayMode === 'under' && (
+        <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 pointer-events-auto">
+          <LocationDisplay />
+        </div>
+      )}
       
       {/* Available Jobs - Overlay when online */}
       {isOnline && availableJobs.length > 0 && !currentJob && (
