@@ -4,8 +4,15 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
 export interface Driver {
   id: string;
   name: string;
+  fullName: string;
   email: string;
   phone: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  profileImage?: string;
+  status: string;
   isOnline: boolean;
   currentLocation: { lat: number; lng: number };
   rating: number;
@@ -20,6 +27,14 @@ export interface Driver {
     model: string;
     year: number;
     licensePlate: string;
+  };
+  vehicleInfo: {
+    make: string;
+    model: string;
+    year: string;
+    color: string;
+    licensePlate: string;
+    type: string;
   };
   earnings: {
     today: number;
@@ -75,8 +90,15 @@ export const DriverProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [driver, setDriver] = useState<Driver | null>({
     id: "driver-123",
     name: "Mike Johnson",
+    fullName: "Mike Johnson",
     email: "mike@example.com",
     phone: "+1234567890",
+    address: "123 Main St",
+    city: "Los Angeles",
+    state: "CA",
+    zipCode: "90210",
+    profileImage: "",
+    status: "active",
     isOnline: false,
     currentLocation: { lat: 34.0522, lng: -118.2437 },
     rating: 4.9,
@@ -91,6 +113,14 @@ export const DriverProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       model: "Transit",
       year: 2022,
       licensePlate: "ABC123",
+    },
+    vehicleInfo: {
+      make: "Ford",
+      model: "Transit",
+      year: "2022",
+      color: "White",
+      licensePlate: "ABC123",
+      type: "van",
     },
     earnings: {
       today: 127.50,

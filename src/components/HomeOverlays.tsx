@@ -92,7 +92,7 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
             isOnline={isOnline} 
             onToggle={onToggleOnline}
             showLocationOverlay={true}
-            location={<LocationOverlayDisplay />}
+            location="Los Angeles, CA"
           />
         ) : (
           <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
