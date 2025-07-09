@@ -1,17 +1,17 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { useDriver } from '@/contexts/DriverContext';
 import { Loader } from '@googlemaps/js-api-loader';
 import { config } from '@/config/env';
-
 interface MapViewProps {
   height?: string;
   showCurrentLocation?: boolean;
   showJobLocation?: boolean;
-  jobLocation?: { lat: number; lng: number };
+  jobLocation?: {
+    lat: number;
+    lng: number;
+  };
   interactive?: boolean;
 }
-
 const MapView: React.FC<MapViewProps> = ({
   height = 'h-[200px]',
   showCurrentLocation = true,
@@ -21,37 +21,38 @@ const MapView: React.FC<MapViewProps> = ({
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
-  const { driver } = useDriver();
+  const {
+    driver
+  } = useDriver();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Use driver's current location or default to LA
-  const currentLocation = driver?.currentLocation || { lat: 34.0522, lng: -118.2437 };
-  
+  const currentLocation = driver?.currentLocation || {
+    lat: 34.0522,
+    lng: -118.2437
+  };
   useEffect(() => {
     const initializeMap = async () => {
       try {
         setIsLoading(true);
         setError(null);
-        
+
         // Check if API key is available
         if (!config.googleMapsApiKey) {
           setError('Google Maps API key not configured');
           setIsLoading(false);
           return;
         }
-        
+
         // Initialize Google Maps
         const loader = new Loader({
           apiKey: config.googleMapsApiKey,
           version: 'weekly',
           libraries: ['places']
         });
-
         await loader.load();
-        
         if (!mapRef.current) return;
-        
         const mapOptions: google.maps.MapOptions = {
           center: currentLocation,
           zoom: 15,
@@ -60,9 +61,8 @@ const MapView: React.FC<MapViewProps> = ({
           zoomControl: interactive,
           mapTypeControl: false,
           streetViewControl: false,
-          fullscreenControl: false,
+          fullscreenControl: false
         };
-
         const map = new google.maps.Map(mapRef.current, mapOptions);
         mapInstanceRef.current = map;
 
@@ -79,7 +79,7 @@ const MapView: React.FC<MapViewProps> = ({
                   <circle cx="12" cy="12" r="3" fill="white"/>
                 </svg>
               `),
-              scaledSize: new google.maps.Size(24, 24),
+              scaledSize: new google.maps.Size(24, 24)
             }
           });
         }
@@ -96,7 +96,7 @@ const MapView: React.FC<MapViewProps> = ({
                   <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#FF6B35"/>
                 </svg>
               `),
-              scaledSize: new google.maps.Size(32, 32),
+              scaledSize: new google.maps.Size(32, 32)
             }
           });
 
@@ -107,16 +107,14 @@ const MapView: React.FC<MapViewProps> = ({
               suppressMarkers: true,
               polylineOptions: {
                 strokeColor: '#FF6B35',
-                strokeWeight: 4,
+                strokeWeight: 4
               }
             });
-            
             directionsRenderer.setMap(map);
-            
             directionsService.route({
               origin: currentLocation,
               destination: jobLocation,
-              travelMode: google.maps.TravelMode.DRIVING,
+              travelMode: google.maps.TravelMode.DRIVING
             }, (result, status) => {
               if (status === 'OK' && result) {
                 directionsRenderer.setDirections(result);
@@ -124,7 +122,6 @@ const MapView: React.FC<MapViewProps> = ({
             });
           }
         }
-        
         setIsLoading(false);
       } catch (err) {
         console.error('Error loading Google Maps:', err);
@@ -132,35 +129,16 @@ const MapView: React.FC<MapViewProps> = ({
         setIsLoading(false);
       }
     };
-
     initializeMap();
   }, [currentLocation, showCurrentLocation, showJobLocation, jobLocation, interactive]);
-  
   if (error) {
-    return (
-      <div className={`w-full ${height} rounded-lg border overflow-hidden flex items-center justify-center bg-secondary/50`}>
-        <div className="text-center text-muted-foreground">
-          <p className="font-medium">Map unavailable</p>
-          <p className="text-xs">{error}</p>
-        </div>
-      </div>
-    );
+    return;
   }
-  
-  return (
-    <div className={`w-full ${height} rounded-lg border overflow-hidden relative`}>
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
+  return <div className={`w-full ${height} rounded-lg border overflow-hidden relative`}>
+      {isLoading && <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-      )}
-      <div 
-        ref={mapRef} 
-        className="w-full h-full"
-        aria-label="Map view showing location"
-      />
-    </div>
-  );
+        </div>}
+      <div ref={mapRef} className="w-full h-full" aria-label="Map view showing location" />
+    </div>;
 };
-
 export default MapView;
