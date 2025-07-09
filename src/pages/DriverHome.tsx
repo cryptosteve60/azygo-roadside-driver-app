@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from "react";
 import DriverLayout from "@/components/DriverLayout";
-import EazyGoToggle from "@/components/EazyGoToggle";
+import AyzgoToggle from "@/components/AyzgoToggle";
+import QuickAccessGrid from "@/components/QuickAccessGrid";
 import LocationDisplay from "@/components/LocationDisplay";
 import MapView from "@/components/MapView";
 import JobRequestCard from "@/components/JobRequestCard";
@@ -91,12 +92,12 @@ const DriverHome: React.FC = () => {
         
         if (online) {
           toast({
-            title: "EAZY GO is ON! 🚗",
+            title: "AYZGO is ON! 🚗",
             description: "You'll start receiving job requests in your area."
           });
         } else {
           toast({
-            title: "EAZY GO is OFF",
+            title: "AYZGO is OFF",
             description: "You won't receive new job requests."
           });
         }
@@ -188,21 +189,22 @@ const DriverHome: React.FC = () => {
         
         {/* Overlaid Components */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* Top Section - Location Display */}
-          <div className="absolute top-4 left-4 right-4 pointer-events-auto">
+          {/* Top Section - Location Display and Quick Access Grid */}
+          <div className="absolute top-4 left-4 right-4 pointer-events-auto space-y-3">
             <LocationDisplay city="Los Angeles" state="CA" />
+            <QuickAccessGrid />
           </div>
           
-          {/* Bottom Section - EAZY GO Toggle */}
+          {/* Bottom Section - AYZGO Toggle */}
           <div className="absolute bottom-20 left-4 right-4 pointer-events-auto">
-            <EazyGoToggle isOnline={isOnline} onToggle={handleToggleOnline} />
+            <AyzgoToggle isOnline={isOnline} onToggle={handleToggleOnline} />
           </div>
           
           {/* Available Jobs - Overlay when online */}
           {isOnline && availableJobs.length > 0 && !currentJob && (
-            <div className="absolute top-24 left-4 right-4 bottom-32 overflow-y-auto pointer-events-auto">
+            <div className="absolute top-32 left-4 right-4 bottom-32 overflow-y-auto pointer-events-auto">
               <div className="bg-background/95 backdrop-blur-sm rounded-lg p-4 mb-4">
-                <h2 className="text-xl font-bold mb-4">Available Requests</h2>
+                <h2 className="text-xl font-bold text-center mb-4">Available Requests</h2>
                 <div className="space-y-4">
                   {availableJobs.map((job) => (
                     <JobRequestCard
@@ -219,7 +221,7 @@ const DriverHome: React.FC = () => {
 
           {/* In-App Messaging - Show when there's an active job */}
           {currentJob && showMessaging && (
-            <div className="absolute top-24 left-4 right-4 bottom-32 pointer-events-auto">
+            <div className="absolute top-32 left-4 right-4 bottom-32 pointer-events-auto">
               <InAppMessaging
                 jobId={currentJob.id}
                 customerName={currentJob.customerName}
@@ -241,7 +243,7 @@ const DriverHome: React.FC = () => {
 
           {/* Active Job Indicator */}
           {currentJob && (
-            <div className="absolute top-24 left-4 right-4 pointer-events-auto">
+            <div className="absolute top-32 left-4 right-4 pointer-events-auto">
               <div className="bg-primary/95 backdrop-blur-sm rounded-lg p-4 text-primary-foreground">
                 <div className="flex items-center justify-between">
                   <div>

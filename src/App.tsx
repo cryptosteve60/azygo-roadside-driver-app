@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import DriverHome from "./pages/DriverHome";
 import DriverActiveJob from "./pages/DriverActiveJob";
 import DriverJobs from "./pages/DriverJobs";
+import DriverProducts from "./pages/DriverProducts";
 import DriverEarnings from "./pages/DriverEarnings";
 import DriverProfile from "./pages/DriverProfile";
 import NotFound from "./pages/NotFound";
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/driver/home" element={<DriverHome />} />
             <Route path="/driver/active-job" element={<DriverActiveJob />} />
             <Route path="/driver/jobs" element={<DriverJobs />} />
+            <Route path="/driver/products" element={<DriverProducts />} />
             <Route path="/driver/earnings" element={<DriverEarnings />} />
             <Route path="/driver/profile" element={<DriverProfile />} />
             

@@ -1,10 +1,10 @@
-
 import React, { useState } from "react";
 import DriverLayout from "@/components/DriverLayout";
+import JobHistoryTable from "@/components/JobHistoryTable";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DollarSign, TrendingUp, Calendar, CreditCard } from "lucide-react";
+import { DollarSign, TrendingUp, Calendar, CreditCard, Star } from "lucide-react";
 
 const DriverEarnings: React.FC = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -18,6 +18,13 @@ const DriverEarnings: React.FC = () => {
     available: 3120.30
   };
 
+  const driverStats = {
+    rating: 4.9,
+    totalJobs: 847,
+    completedJobs: 832,
+    successRate: 98.2
+  };
+
   const recentPayouts = [
     { date: "Jan 14, 2024", amount: 450.00, status: "Completed" },
     { date: "Jan 7, 2024", amount: 380.50, status: "Completed" },
@@ -28,24 +35,35 @@ const DriverEarnings: React.FC = () => {
     <DriverLayout>
       <div className="max-w-2xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold mb-2">Earnings Dashboard</h1>
-          <p className="text-muted-foreground">Track your income and manage payouts</p>
+          <h1 className="text-2xl font-bold text-center mb-2">Earnings Dashboard</h1>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <div className="flex gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className={`h-4 w-4 ${i < Math.floor(driverStats.rating) ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
+              ))}
+            </div>
+            <span className="text-sm font-medium">{driverStats.rating} ({driverStats.totalJobs} jobs)</span>
+          </div>
+          <p className="text-muted-foreground text-center">
+            {driverStats.completedJobs} completed • {driverStats.successRate}% success rate
+          </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
             <TabsTrigger value="payouts">Payouts</TabsTrigger>
             <TabsTrigger value="details">Details</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6 mt-6">
             {/* Main Earnings Card */}
-            <Card className="p-6">
+            <Card className="p-4">
               <div className="flex items-center gap-2 mb-4">
                 <DollarSign className="h-6 w-6 text-primary" />
-                <h3 className="text-xl font-bold">Current Earnings</h3>
-                <TrendingUp className="h-5 w-5 text-green-600 ml-auto" />
+                <h3 className="text-xl font-bold text-center flex-1">Current Earnings</h3>
+                <TrendingUp className="h-5 w-5 text-green-600" />
               </div>
               
               <div className="grid grid-cols-3 gap-4 mb-6">
@@ -72,8 +90,8 @@ const DriverEarnings: React.FC = () => {
             </Card>
 
             {/* Balance Card */}
-            <Card className="p-6">
-              <h3 className="text-lg font-bold mb-4">Account Balance</h3>
+            <Card className="p-4">
+              <h3 className="text-lg font-bold text-center mb-4">Account Balance</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                   <div className="text-2xl font-bold text-yellow-800">${earningsData.pending.toFixed(2)}</div>
@@ -93,9 +111,13 @@ const DriverEarnings: React.FC = () => {
             </Card>
           </TabsContent>
 
+          <TabsContent value="history" className="space-y-4 mt-6">
+            <JobHistoryTable />
+          </TabsContent>
+
           <TabsContent value="payouts" className="space-y-4 mt-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold">Payout History</h3>
+              <h3 className="text-lg font-bold text-center flex-1">Payout History</h3>
               <Button variant="outline" size="sm">
                 <Calendar className="h-4 w-4 mr-2" />
                 Filter
@@ -120,8 +142,8 @@ const DriverEarnings: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="details" className="space-y-6 mt-6">
-            <Card className="p-6">
-              <h3 className="text-lg font-bold mb-4">Weekly Breakdown</h3>
+            <Card className="p-4">
+              <h3 className="text-lg font-bold text-center mb-4">Weekly Breakdown</h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span>Monday</span>
@@ -158,8 +180,8 @@ const DriverEarnings: React.FC = () => {
               </div>
             </Card>
 
-            <Card className="p-6">
-              <h3 className="text-lg font-bold mb-4">Performance Metrics</h3>
+            <Card className="p-4">
+              <h3 className="text-lg font-bold text-center mb-4">Performance Metrics</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center p-3 bg-muted rounded-lg">
                   <div className="text-lg font-bold">$37.20</div>

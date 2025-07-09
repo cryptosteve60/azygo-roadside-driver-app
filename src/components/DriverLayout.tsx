@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Briefcase, DollarSign, User } from "lucide-react";
+import { Home, Briefcase, Package, DollarSign, User } from "lucide-react";
 import Logo from "./Logo";
 
 interface DriverLayoutProps {
@@ -49,6 +49,15 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
           >
             <Briefcase className="h-5 w-5" />
             <span className="text-xs">Jobs</span>
+          </Link>
+          <Link 
+            to="/driver/products" 
+            className={`flex flex-col items-center gap-1 ${
+              location.pathname === "/driver/products" ? "text-primary" : "text-muted-foreground"
+            }`}
+          >
+            <Package className="h-5 w-5" />
+            <span className="text-xs">Products</span>
           </Link>
           <Link 
             to="/driver/earnings" 
