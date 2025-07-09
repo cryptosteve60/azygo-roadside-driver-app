@@ -14,7 +14,7 @@ const FloatingRightIcons: React.FC<FloatingRightIconsProps> = ({
   onSafetyClick,
 }) => {
   return (
-    <div className="fixed right-4 top-[calc(50%-60px)] z-50 flex flex-col gap-3">
+    <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50 flex flex-col gap-3">
       <button
         onClick={onSupportClick}
         className="bg-gradient-to-br from-blue-500 to-blue-700 backdrop-blur-sm border-0 shadow-lg rounded-full p-3 hover:from-blue-600 hover:to-blue-800 transition-all duration-200 hover:scale-105"

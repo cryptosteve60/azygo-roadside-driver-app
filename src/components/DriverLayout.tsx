@@ -1,18 +1,24 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Home, Briefcase, Package, DollarSign, User } from "lucide-react";
+import { Home, Briefcase, Package, DollarSign, User, Truck } from "lucide-react";
 import Logo from "./Logo";
+
 interface DriverLayoutProps {
   children: React.ReactNode;
 }
+
 const DriverLayout: React.FC<DriverLayoutProps> = ({
   children
 }) => {
   const location = useLocation();
-  return <div className="min-h-screen bg-background flex flex-col">
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header - Optimized for space */}
       <header className="flex justify-between items-center p-3 border-b bg-primary text-primary-foreground">
         <div className="flex items-center gap-2">
+          <Truck className="h-5 w-5" />
           <Logo size="sm" />
           <h1 className="text-base font-bold">Ayzgo Driver</h1>
         </div>
@@ -51,6 +57,8 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({
           </Link>
         </div>
       </nav>
-    </div>;
+    </div>
+  );
 };
+
 export default DriverLayout;

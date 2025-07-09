@@ -62,13 +62,13 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
         <FloatingLocationIcon onClick={() => openModal('location')} />
       </div>
       
-      {/* AYZGO Toggle - Moved up from bottom */}
+      {/* AYZGO Toggle */}
       <div className="pointer-events-auto">
         <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
       </div>
 
-      {/* Location Display - Left aligned under AYZGO Button */}
-      <div className="fixed bottom-8 left-4 z-40 pointer-events-auto">
+      {/* Location Display - Left of AYZGO Button */}
+      <div className="fixed bottom-20 left-[calc(50%-140px)] z-40 pointer-events-auto">
         <LocationDisplay />
       </div>
       
