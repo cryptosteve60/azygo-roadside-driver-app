@@ -51,6 +51,11 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
 
   return (
     <div className="absolute inset-0 pointer-events-none">
+      {/* Location Display - Top of page under header */}
+      <div className="fixed top-20 left-4 z-40 pointer-events-auto">
+        <LocationDisplay />
+      </div>
+
       {/* Floating Icons */}
       <div className="pointer-events-auto">
         <FloatingRewardsIcon onClick={() => openModal('rewards')} />
@@ -65,11 +70,6 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
       {/* AYZGO Toggle */}
       <div className="pointer-events-auto">
         <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
-      </div>
-
-      {/* Location Display - Left of AYZGO Button */}
-      <div className="fixed bottom-20 left-[calc(50%-140px)] z-40 pointer-events-auto">
-        <LocationDisplay />
       </div>
       
       {/* Available Jobs - Overlay when online */}
