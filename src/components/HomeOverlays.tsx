@@ -1,12 +1,19 @@
 
-import React from "react";
+import React, { useState } from "react";
 import LocationDisplay from "./LocationDisplay";
-import QuickAccessGrid from "./QuickAccessGrid";
 import AyzgoToggle from "./AyzgoToggle";
 import AvailableJobsOverlay from "./AvailableJobsOverlay";
 import ActiveJobIndicator from "./ActiveJobIndicator";
 import StatusMessages from "./StatusMessages";
 import InAppMessaging from "./InAppMessaging";
+import FloatingRewardsIcon from "./FloatingRewardsIcon";
+import FloatingRightIcons from "./FloatingRightIcons";
+import FloatingLocationIcon from "./FloatingLocationIcon";
+import SupportOverlay from "./SupportOverlay";
+import CommunityModal from "./CommunityModal";
+import RewardsModal from "./RewardsModal";
+import LocationModal from "./LocationModal";
+import SafetyModal from "./SafetyModal";
 import { DriverJob, Driver } from "@/contexts/DriverContext";
 
 interface HomeOverlaysProps {
@@ -32,16 +39,36 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
   onDeclineJob,
   onToggleMessaging,
 }) => {
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+
+  const openModal = (modalId: string) => {
+    setActiveModal(modalId);
+  };
+
+  const closeModal = () => {
+    setActiveModal(null);
+  };
+
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {/* Top Section - Location Display and Quick Access Grid */}
-      <div className="absolute top-4 left-4 right-4 pointer-events-auto space-y-3">
+      {/* Top Section - Location Display Only */}
+      <div className="absolute top-3 left-3 right-3 pointer-events-auto">
         <LocationDisplay city="Los Angeles" state="CA" />
-        <QuickAccessGrid />
       </div>
       
-      {/* Bottom Section - AYZGO Toggle */}
-      <div className="absolute bottom-20 left-4 right-4 pointer-events-auto">
+      {/* Floating Icons */}
+      <div className="pointer-events-auto">
+        <FloatingRewardsIcon onClick={() => openModal('rewards')} />
+        <FloatingRightIcons
+          onSupportClick={() => openModal('support')}
+          onCommunityClick={() => openModal('community')}
+          onSafetyClick={() => openModal('safety')}
+        />
+        <FloatingLocationIcon onClick={() => openModal('location')} />
+      </div>
+      
+      {/* AYZGO Toggle - Circular Bottom Center */}
+      <div className="pointer-events-auto">
         <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
       </div>
       
@@ -56,7 +83,7 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
 
       {/* In-App Messaging - Show when there's an active job */}
       {currentJob && showMessaging && (
-        <div className="absolute top-32 left-4 right-4 bottom-32 pointer-events-auto">
+        <div className="absolute top-24 left-3 right-3 bottom-32 pointer-events-auto">
           <InAppMessaging
             jobId={currentJob.id}
             customerName={currentJob.customerName}
@@ -81,6 +108,13 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
           onToggleMessaging={onToggleMessaging}
         />
       )}
+
+      {/* Modals */}
+      <SupportOverlay isOpen={activeModal === 'support'} onClose={closeModal} />
+      <CommunityModal isOpen={activeModal === 'community'} onClose={closeModal} />
+      <RewardsModal isOpen={activeModal === 'rewards'} onClose={closeModal} />
+      <LocationModal isOpen={activeModal === 'location'} onClose={closeModal} />
+      <SafetyModal isOpen={activeModal === 'safety'} onClose={closeModal} />
     </div>
   );
 };

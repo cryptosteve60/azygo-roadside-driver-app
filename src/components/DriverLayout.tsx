@@ -13,24 +13,24 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
   
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="flex justify-between items-center p-4 border-b bg-primary text-primary-foreground">
+      {/* Header - Optimized for space */}
+      <header className="flex justify-between items-center p-3 border-b bg-primary text-primary-foreground">
         <div className="flex items-center gap-2">
-          <Logo size="md" />
-          <h1 className="text-lg font-bold">Ayzgo Driver</h1>
+          <Logo size="sm" />
+          <h1 className="text-base font-bold">Ayzgo Driver</h1>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-primary-foreground/80">Professional Dashboard</span>
+          <span className="text-xs text-primary-foreground/80">Professional Dashboard</span>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 p-4">
+      <main className="flex-1 p-3">
         {children}
       </main>
       
-      {/* Footer Navigation - Sticky */}
-      <nav className="border-t p-4 bg-background sticky bottom-0">
+      {/* Footer Navigation - Optimized */}
+      <nav className="border-t p-3 bg-background sticky bottom-0">
         <div className="flex justify-around items-center">
           <Link 
             to="/driver/home" 
@@ -38,7 +38,7 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
               location.pathname === "/driver/home" ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <Home className="h-5 w-5" />
+            <Home className="h-4 w-4" />
             <span className="text-xs">Home</span>
           </Link>
           <Link 
@@ -47,7 +47,7 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
               location.pathname === "/driver/jobs" ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <Briefcase className="h-5 w-5" />
+            <Briefcase className="h-4 w-4" />
             <span className="text-xs">Jobs</span>
           </Link>
           <Link 
@@ -56,7 +56,7 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
               location.pathname === "/driver/products" ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <Package className="h-5 w-5" />
+            <Package className="h-4 w-4" />
             <span className="text-xs">Products</span>
           </Link>
           <Link 
@@ -65,7 +65,7 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
               location.pathname === "/driver/earnings" ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <DollarSign className="h-5 w-5" />
+            <DollarSign className="h-4 w-4" />
             <span className="text-xs">Earnings</span>
           </Link>
           <Link 
@@ -74,7 +74,7 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({ children }) => {
               location.pathname === "/driver/profile" ? "text-primary" : "text-muted-foreground"
             }`}
           >
-            <User className="h-5 w-5" />
+            <User className="h-4 w-4" />
             <span className="text-xs">Profile</span>
           </Link>
         </div>

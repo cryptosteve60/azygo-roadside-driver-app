@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 interface AyzgoToggleProps {
   isOnline: boolean;
@@ -10,23 +9,18 @@ interface AyzgoToggleProps {
 
 const AyzgoToggle: React.FC<AyzgoToggleProps> = ({ isOnline, onToggle }) => {
   return (
-    <Card className="p-4 bg-background/95 backdrop-blur-sm border-0 shadow-lg">
-      <div className="text-center">
-        <p className="text-sm font-medium mb-3">
-          {isOnline ? "You're online and available" : "Not busy right now"}
-        </p>
-        <Button
-          onClick={() => onToggle(!isOnline)}
-          className={`w-full h-14 text-lg font-bold rounded-full transition-all ${
-            isOnline 
-              ? 'bg-red-500 hover:bg-red-600 text-white' 
-              : 'bg-red-500 hover:bg-red-600 text-white'
-          }`}
-        >
-          {isOnline ? 'STOP AYZGO!' : 'AYZGO!'}
-        </Button>
-      </div>
-    </Card>
+    <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
+      <Button
+        onClick={() => onToggle(!isOnline)}
+        className={`h-16 w-16 text-sm font-bold rounded-full transition-all shadow-lg ${
+          isOnline 
+            ? 'bg-red-500 hover:bg-red-600 text-white' 
+            : 'bg-primary hover:bg-primary/90 text-primary-foreground'
+        }`}
+      >
+        {isOnline ? 'STOP' : 'AYZGO'}
+      </Button>
+    </div>
   );
 };
 
