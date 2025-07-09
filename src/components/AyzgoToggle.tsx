@@ -16,7 +16,7 @@ const AyzgoToggle: React.FC<AyzgoToggleProps> = ({
   location = "Getting location..." 
 }) => {
   return (
-    <div className="fixed bottom-16 left-1/2 transform -translate-x-1/2 z-50">
+    <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
       <Button
         onClick={() => onToggle(!isOnline)}
         className={`h-20 w-20 text-lg font-bold rounded-full transition-all duration-300 shadow-xl relative flex flex-col items-center justify-center ${

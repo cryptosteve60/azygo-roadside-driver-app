@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import LocationDisplay from "./LocationDisplay";
 import AyzgoToggle from "./AyzgoToggle";
@@ -14,6 +15,7 @@ import RewardsModal from "./RewardsModal";
 import LocationModal from "./LocationModal";
 import SafetyModal from "./SafetyModal";
 import { DriverJob, Driver } from "@/contexts/DriverContext";
+
 interface HomeOverlaysProps {
   isOnline: boolean;
   availableJobs: DriverJob[];
@@ -25,6 +27,7 @@ interface HomeOverlaysProps {
   onDeclineJob: (jobId: string) => void;
   onToggleMessaging: () => void;
 }
+
 const HomeOverlays: React.FC<HomeOverlaysProps> = ({
   isOnline,
   availableJobs,
@@ -37,43 +40,74 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
   onToggleMessaging
 }) => {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+
   const openModal = (modalId: string) => {
     setActiveModal(modalId);
   };
+
   const closeModal = () => {
     setActiveModal(null);
   };
-  return <div className="absolute inset-0 pointer-events-none">
-      {/* Top Section - Location Display Only */}
-      <div className="absolute top-3 left-3 right-3 pointer-events-auto">
-        <LocationDisplay city="Los Angeles" state="CA" />
-      </div>
-      
+
+  return (
+    <div className="absolute inset-0 pointer-events-none">
       {/* Floating Icons */}
       <div className="pointer-events-auto">
         <FloatingRewardsIcon onClick={() => openModal('rewards')} />
-        <FloatingRightIcons onSupportClick={() => openModal('support')} onCommunityClick={() => openModal('community')} onSafetyClick={() => openModal('safety')} />
-        
+        <FloatingRightIcons 
+          onSupportClick={() => openModal('support')} 
+          onCommunityClick={() => openModal('community')} 
+          onSafetyClick={() => openModal('safety')} 
+        />
+        <FloatingLocationIcon onClick={() => openModal('location')} />
       </div>
       
-      {/* AYZGO Toggle - Circular Bottom Center */}
+      {/* AYZGO Toggle - Moved up from bottom */}
       <div className="pointer-events-auto">
         <AyzgoToggle isOnline={isOnline} onToggle={onToggleOnline} />
       </div>
+
+      {/* Location Display - Under AYZGO Button */}
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto">
+        <LocationDisplay />
+      </div>
       
       {/* Available Jobs - Overlay when online */}
-      {isOnline && availableJobs.length > 0 && !currentJob && <AvailableJobsOverlay jobs={availableJobs} onAccept={onAcceptJob} onDecline={onDeclineJob} />}
+      {isOnline && availableJobs.length > 0 && !currentJob && (
+        <AvailableJobsOverlay 
+          jobs={availableJobs} 
+          onAccept={onAcceptJob} 
+          onDecline={onDeclineJob} 
+        />
+      )}
 
       {/* In-App Messaging - Show when there's an active job */}
-      {currentJob && showMessaging && <div className="absolute top-24 left-3 right-3 bottom-32 pointer-events-auto">
-          <InAppMessaging jobId={currentJob.id} customerName={currentJob.customerName} customerId={currentJob.customerId} driverId={driver.id} />
-        </div>}
+      {currentJob && showMessaging && (
+        <div className="absolute top-24 left-3 right-3 bottom-32 pointer-events-auto">
+          <InAppMessaging 
+            jobId={currentJob.id} 
+            customerName={currentJob.customerName} 
+            customerId={currentJob.customerId} 
+            driverId={driver.id} 
+          />
+        </div>
+      )}
       
       {/* Status Messages */}
-      <StatusMessages isOnline={isOnline} hasAvailableJobs={availableJobs.length > 0} hasCurrentJob={!!currentJob} />
+      <StatusMessages 
+        isOnline={isOnline} 
+        hasAvailableJobs={availableJobs.length > 0} 
+        hasCurrentJob={!!currentJob} 
+      />
 
       {/* Active Job Indicator */}
-      {currentJob && <ActiveJobIndicator job={currentJob} showMessaging={showMessaging} onToggleMessaging={onToggleMessaging} />}
+      {currentJob && (
+        <ActiveJobIndicator 
+          job={currentJob} 
+          showMessaging={showMessaging} 
+          onToggleMessaging={onToggleMessaging} 
+        />
+      )}
 
       {/* Modals */}
       <SupportOverlay isOpen={activeModal === 'support'} onClose={closeModal} />
@@ -81,6 +115,8 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
       <RewardsModal isOpen={activeModal === 'rewards'} onClose={closeModal} />
       <LocationModal isOpen={activeModal === 'location'} onClose={closeModal} />
       <SafetyModal isOpen={activeModal === 'safety'} onClose={closeModal} />
-    </div>;
+    </div>
+  );
 };
+
 export default HomeOverlays;
