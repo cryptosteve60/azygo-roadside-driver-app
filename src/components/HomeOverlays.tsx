@@ -51,8 +51,8 @@ const HomeOverlays: React.FC<HomeOverlaysProps> = ({
 
   return (
     <div className="absolute inset-0 pointer-events-none">
-      {/* Location Display - Top of page under header */}
-      <div className="fixed top-20 left-4 z-40 pointer-events-auto">
+      {/* Location Display - Top right of page under header */}
+      <div className="fixed top-20 right-4 z-40 pointer-events-auto">
         <LocationDisplay />
       </div>
 
