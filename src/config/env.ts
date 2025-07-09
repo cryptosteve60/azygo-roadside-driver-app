@@ -1,6 +1,6 @@
 
 export const config = {
-  googleMapsApiKey: 'AIzaSyDakkuH9lDMSqhH4sO87hXWv9PWij4rr8g',
+  googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
   isDevelopment: import.meta.env.DEV,
   isProduction: import.meta.env.PROD,
 };
@@ -10,7 +10,7 @@ export const checkRequiredEnvVars = () => {
   const missing = [];
   
   if (!config.googleMapsApiKey) {
-    missing.push('GOOGLE_MAPS_API_KEY');
+    missing.push('VITE_GOOGLE_MAPS_API_KEY');
   }
   
   if (missing.length > 0) {

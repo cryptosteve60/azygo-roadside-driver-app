@@ -17,7 +17,7 @@ const DriverLayout: React.FC<DriverLayoutProps> = ({
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header - Optimized for space */}
       <header className="flex justify-between items-center p-3 border-b bg-primary text-primary-foreground">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Truck className="h-5 w-5" />
           <Logo size="sm" />
           <h1 className="text-base font-bold">Ayzgo Driver</h1>
