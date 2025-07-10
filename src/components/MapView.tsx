@@ -132,7 +132,19 @@ const MapView: React.FC<MapViewProps> = ({
     initializeMap();
   }, [currentLocation, showCurrentLocation, showJobLocation, jobLocation, interactive]);
   if (error) {
-    return;
+    return (
+      <div className={`w-full ${height} rounded-lg border overflow-hidden relative flex items-center justify-center bg-muted`}>
+        <div className="text-center p-6">
+          <div className="text-muted-foreground mb-2">⚠️ Map Error</div>
+          <div className="text-sm text-muted-foreground">{error}</div>
+          {!config.googleMapsApiKey && (
+            <div className="text-xs text-muted-foreground mt-2">
+              Set VITE_GOOGLE_MAPS_API_KEY in your environment variables
+            </div>
+          )}
+        </div>
+      </div>
+    );
   }
   return <div className={`w-full ${height} rounded-lg border overflow-hidden relative`}>
       {isLoading && <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
