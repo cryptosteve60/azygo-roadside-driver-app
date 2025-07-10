@@ -18,8 +18,12 @@ export const useRealTimeConnection = () => {
       // Initialize notifications
       await notificationService.initialize();
 
-      // Connect WebSocket
-      websocketService.connect(driver.id);
+      // Connect WebSocket only if not in development
+      if (!import.meta.env.DEV) {
+        websocketService.connect(driver.id);
+      } else {
+        console.log('Skipping WebSocket connection in development mode');
+      }
 
       // Set up WebSocket listeners
       websocketService.on('NEW_JOB', handleNewJob);

@@ -37,21 +37,30 @@ const MapView: React.FC<MapViewProps> = ({
       try {
         setIsLoading(true);
         setError(null);
+        
+        console.log('MapView: Initializing map...');
+        console.log('MapView: API Key configured:', !!config.googleMapsApiKey);
+        console.log('MapView: API Key value:', config.googleMapsApiKey ? 'Present' : 'Missing');
 
         // Check if API key is available
         if (!config.googleMapsApiKey) {
+          console.error('MapView: Google Maps API key not configured');
           setError('Google Maps API key not configured');
           setIsLoading(false);
           return;
         }
 
         // Initialize Google Maps
+        console.log('MapView: Creating Google Maps loader...');
         const loader = new Loader({
           apiKey: config.googleMapsApiKey,
           version: 'weekly',
           libraries: ['places']
         });
+        
+        console.log('MapView: Loading Google Maps API...');
         await loader.load();
+        console.log('MapView: Google Maps API loaded successfully');
         if (!mapRef.current) return;
         const mapOptions: google.maps.MapOptions = {
           center: currentLocation,
@@ -124,8 +133,12 @@ const MapView: React.FC<MapViewProps> = ({
         }
         setIsLoading(false);
       } catch (err) {
-        console.error('Error loading Google Maps:', err);
-        setError('Failed to load map. Please check your API key.');
+        console.error('MapView: Error loading Google Maps:', err);
+        console.error('MapView: Error details:', {
+          message: err instanceof Error ? err.message : 'Unknown error',
+          apiKey: config.googleMapsApiKey ? 'Present' : 'Missing'
+        });
+        setError(`Failed to load map: ${err instanceof Error ? err.message : 'Unknown error'}`);
         setIsLoading(false);
       }
     };

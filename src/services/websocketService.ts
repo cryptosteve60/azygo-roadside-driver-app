@@ -14,6 +14,12 @@ class WebSocketService {
 
   connect(driverId: string) {
     try {
+      // Skip connection in development or when WebSocket server is not available
+      if (import.meta.env.DEV) {
+        console.log('WebSocket connection skipped in development mode');
+        return;
+      }
+      
       // In production, this would be your WebSocket server URL
       const wsUrl = `wss://api.ayzgo.com/ws/driver/${driverId}`;
       
@@ -55,13 +61,23 @@ class WebSocketService {
   }
 
   private attemptReconnect(driverId: string) {
+    // Skip reconnection in development
+    if (import.meta.env.DEV) {
+      return;
+    }
+    
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
       
+      // Exponential backoff with maximum delay
+      const delay = Math.min(this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1), 30000);
+      
       setTimeout(() => {
         this.connect(driverId);
-      }, this.reconnectDelay * this.reconnectAttempts);
+      }, delay);
+    } else {
+      console.log('Max reconnection attempts reached. Stopping reconnection.');
     }
   }
 

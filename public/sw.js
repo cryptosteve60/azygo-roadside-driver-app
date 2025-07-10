@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'ayzgo-driver-v1';
+const CACHE_NAME = 'ayzgo-driver-v2';
 const urlsToCache = [
   '/',
   '/static/js/bundle.js',
